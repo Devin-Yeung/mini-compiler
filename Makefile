@@ -24,6 +24,9 @@ build/func.o: func.c
 build/lexer.o: build lexer.c lexer.h
 	$(CC) $(CFLAGS) -c lexer.c -o build/lexer.o
 
+format:
+	clang-format -i *.c
+
 clean: build
 	echo "Cleaning ..."
 	rm -r ./build/*
