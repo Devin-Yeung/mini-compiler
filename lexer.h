@@ -1,6 +1,8 @@
 #ifndef MINI_COMPILER_LEXER_H
 #define MINI_COMPILER_LEXER_H
 
+#include <stdbool.h>
+
 typedef struct Span {
   unsigned start;
   unsigned end;
@@ -32,7 +34,22 @@ typedef struct Token {
   TokenTy ty;
 } Token;
 
-const int table[256][9] = {
+typedef struct DFA {
+    const int (*table)[9]; /* TODO: better Solution? */
+    const unsigned start; /* start state */
+    const unsigned n_accepts; /* number of accept states */
+    const unsigned * accepts; /* accept states */
+    unsigned state; /* current state */
+} DFA;
+
+void dfa_reset(DFA* dfa);
+void dfa_next(DFA* dfa, char c);
+bool dfa_matches(DFA *dfa, const char *s);
+
+static const unsigned ACCEPTS[5] = {2, 4, 5, 7, 8};
+static const unsigned N_ACCEPTS = sizeof(ACCEPTS) / sizeof(ACCEPTS[0]);
+
+static const int TABLE[256][9] = {
     {0, 1, 0, 0, 0, 0, 6, 0, 0}, {0, 1, 0, 0, 0, 0, 6, 0, 0},
     {0, 1, 0, 0, 0, 0, 6, 0, 0}, {0, 1, 0, 0, 0, 0, 6, 0, 0},
     {0, 1, 0, 0, 0, 0, 6, 0, 0}, {0, 1, 0, 0, 0, 0, 6, 0, 0},
