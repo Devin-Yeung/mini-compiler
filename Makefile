@@ -1,10 +1,13 @@
 CC=clang
 CFLAGS=-Wall -Werror -Wextra
 
-all: test
+all: test main
 
 test: dfa_test
 	./build/dfa_test
+
+main: build/func.o
+	$(CC) $(CFLAGS) -o build/func build/func.o
 
 build:
 	mkdir build
