@@ -35,15 +35,15 @@ typedef struct Token {
 } Token;
 
 typedef struct DFA {
-    const int (*table)[9]; /* TODO: better Solution? */
-    const unsigned start; /* start state */
-    const unsigned n_accepts; /* number of accept states */
-    const unsigned * accepts; /* accept states */
-    unsigned state; /* current state */
+  const int (*table)[9];    /* TODO: better Solution? */
+  const unsigned start;     /* start state */
+  const unsigned n_accepts; /* number of accept states */
+  const unsigned *accepts;  /* accept states */
+  unsigned state;           /* current state */
 } DFA;
 
-void dfa_reset(DFA* dfa);
-void dfa_next(DFA* dfa, char c);
+void dfa_reset(DFA *dfa);
+void dfa_next(DFA *dfa, char c);
 bool dfa_matches(DFA *dfa, const char *s);
 
 static const unsigned ACCEPTS[5] = {2, 4, 5, 7, 8};
