@@ -1,10 +1,22 @@
-CC=clang
-CFLAGS=-Wall -Werror -Wextra
+CC            := clang
+CFLAGS        := -Wall -Werror -Wextra
+RUNTIME_FLAGS :=
+
+SANITIZER ?= 0
+
+ASAN_COMPILE_TIME_FLAGS  := -fsanitize=address -fsanitize-address-use-after-scope
+ASAN_RUNTIME_FLAGS       := ASAN_OPTIONS=detect_leaks=1:detect_stack_use_after_return=1
+
+ifeq ($(SANITIZER),1)
+	CFLAGS        := $(CFLAGS) $(ASAN_COMPILE_TIME_FLAGS)
+	RUNTIME_FLAGS := $(RUNTIME_FLAGS) $(ASAN_RUNTIME_FLAGS)
+endif
+
 
 all: test main
 
 test: dfa_test
-	./build/dfa_test
+	$(RUNTIME_FLAGS) ./build/dfa_test
 
 main: build/func.o
 	$(CC) $(CFLAGS) -o build/func build/func.o
@@ -32,6 +44,6 @@ format:
 	clang-format -i *.h
 
 clean: build
-	echo "Cleaning ..."
+	@echo "Cleaning ..."
 	rm -r ./build/*
 
