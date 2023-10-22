@@ -179,4 +179,12 @@ static const int TABLE[256][9] = {
     {0, 1, 0, 0, 0, 0, 6, 0, 0}, {0, 1, 0, 0, 0, 0, 6, 0, 0},
     {0, 1, 0, 0, 0, 0, 6, 0, 0}, {0, 1, 0, 0, 0, 0, 6, 0, 0}};
 
+static struct DFA LEXER_DFA = {
+    .n_accepts = N_ACCEPTS,
+    .accepts = ACCEPTS,
+    .table = TABLE,
+    .start = 1,
+    .state = 1,
+};
+
 #endif // MINI_COMPILER_LEXER_H
