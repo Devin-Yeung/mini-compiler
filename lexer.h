@@ -4,42 +4,42 @@
 #include <stdbool.h>
 
 typedef struct Span {
-  unsigned start;
-  unsigned end;
+    unsigned start;
+    unsigned end;
 } Span;
 
 typedef enum TokenTy {
-  BoolLit,      /* Boolean Literal */
-  NatLit,       /* Natural Number Literal */
-  BoolDecl,     /* The variable type Boolean */
-  NatDecl,      /* The variable type Natural */
-  FuncDecl,     /* The variable type Function */
-  QuestionMark, /* ? */
-  Colon,        /* : */
-  Semicolon,    /* ; */
-  LeftParen,    /* ( */
-  RightParen,   /* ) */
-  Plus,         /* + */
-  Ampersand,    /* & */
-  Arrow,        /* -> */
-  Less,         /* < */
-  Equal,        /* = */
-  Comment,      /* [] */
-  Identifier,   /* Identifier */
+    BoolLit,      /* Boolean Literal */
+    NatLit,       /* Natural Number Literal */
+    BoolDecl,     /* The variable type Boolean */
+    NatDecl,      /* The variable type Natural */
+    FuncDecl,     /* The variable type Function */
+    QuestionMark, /* ? */
+    Colon,        /* : */
+    Semicolon,    /* ; */
+    LeftParen,    /* ( */
+    RightParen,   /* ) */
+    Plus,         /* + */
+    Ampersand,    /* & */
+    Arrow,        /* -> */
+    Less,         /* < */
+    Equal,        /* = */
+    Comment,      /* [] */
+    Identifier,   /* Identifier */
 } TokenTy;
 
 typedef struct Token {
-  char *lexeme;
-  Span span;
-  TokenTy ty;
+    char *lexeme;
+    Span span;
+    TokenTy ty;
 } Token;
 
 typedef struct DFA {
-  const int (*table)[9];    /* TODO: better Solution? */
-  const unsigned start;     /* start state */
-  const unsigned n_accepts; /* number of accept states */
-  const unsigned *accepts;  /* accept states */
-  unsigned state;           /* current state */
+    const int (*table)[9];    /* TODO: better Solution? */
+    const unsigned start;     /* start state */
+    const unsigned n_accepts; /* number of accept states */
+    const unsigned *accepts;  /* accept states */
+    unsigned state;           /* current state */
 } DFA;
 
 void dfa_reset(DFA *dfa);
@@ -47,11 +47,11 @@ void dfa_next(DFA *dfa, char c);
 bool dfa_matches(DFA *dfa, const char *s);
 
 typedef struct Lexer {
-  DFA *dfa;
-  unsigned start; /* start position of the current lexeme */
-  unsigned end;   /* end position of the current lexeme */
-  char *src;
-  unsigned len; /* len of the source code, null byte EXCLUDED */
+    DFA *dfa;
+    unsigned start; /* start position of the current lexeme */
+    unsigned end;   /* end position of the current lexeme */
+    char *src;
+    unsigned len; /* len of the source code, null byte EXCLUDED */
 } Lexer;
 
 Lexer *lexer_new(char *src);
@@ -198,4 +198,4 @@ static struct DFA LEXER_DFA = {
     .state = 1,
 };
 
-#endif // MINI_COMPILER_LEXER_H
+#endif  // MINI_COMPILER_LEXER_H
