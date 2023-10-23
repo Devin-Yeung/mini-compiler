@@ -46,6 +46,17 @@ void dfa_reset(DFA *dfa);
 void dfa_next(DFA *dfa, char c);
 bool dfa_matches(DFA *dfa, const char *s);
 
+typedef struct Lexer {
+  DFA *dfa;
+  unsigned start; /* start position of the current lexeme */
+  unsigned end;   /* end position of the current lexeme */
+  char *src;
+  unsigned len; /* len of the source code, null byte EXCLUDED */
+} Lexer;
+
+Lexer *lexer_new(char *src);
+Token *lexer_next_token(Lexer *lexer);
+
 static const unsigned ACCEPTS[5] = {2, 4, 5, 7, 8};
 static const unsigned N_ACCEPTS = sizeof(ACCEPTS) / sizeof(ACCEPTS[0]);
 
