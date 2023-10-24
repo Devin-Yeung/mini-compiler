@@ -11,8 +11,12 @@ name: CI
 jobs:
 
   test:
-    runs-on: ubuntu-latest
-    name: ubuntu / clang / test
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} / clang / test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
         with:
