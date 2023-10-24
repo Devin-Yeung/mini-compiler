@@ -243,3 +243,12 @@ Token *lexer_next_token(Lexer *lexer) {
 
     return eof_token();
 }
+
+void destroy_token(Token *token) {
+    free(token->span);
+    free(token);
+}
+
+void destroy_lexer(Lexer *lexer) {
+    free(lexer);
+}

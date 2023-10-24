@@ -46,6 +46,7 @@ typedef struct Token {
 
 Token *eof_token();
 char *debug_token(Token *token);
+void destroy_token(Token* token);
 
 typedef struct DFA {
     const int (*table)[9];    /* TODO: better Solution? */
@@ -69,6 +70,7 @@ typedef struct Lexer {
 
 Lexer *lexer_new(char *src);
 Token *lexer_next_token(Lexer *lexer);
+void destroy_lexer(Lexer *lexer);
 
 static const unsigned ACCEPTS[5] = {2, 4, 5, 7, 8};
 static const unsigned N_ACCEPTS = sizeof(ACCEPTS) / sizeof(ACCEPTS[0]);

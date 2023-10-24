@@ -18,11 +18,17 @@ void parse(char* s) {
         Token* next = lexer_next_token(lexer);
         if (next->ty == Eof) {
             printf("EOF!\n");
+            destroy_token(next);
             break;
         } else {
-            printf("Receive: %s\n", debug_token(next));
+            char* info = debug_token(next);
+            printf("Receive: %s\n", info);
+            free(info);
         }
+        destroy_token(next);
     }
+    destroy_lexer(lexer);
+    free(mut);
 }
 
 int main() {
