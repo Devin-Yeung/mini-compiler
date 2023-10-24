@@ -31,6 +31,13 @@ typedef enum TokenTy {
     Eof,          /* End of file */
 } TokenTy;
 
+/**
+ * Get token type from the give lexeme
+ * @param lexeme
+ * @return token type of the lexeme
+ */
+TokenTy get_token_type(char* lexeme);
+
 typedef struct Token {
     char *lexeme;
     Span *span;

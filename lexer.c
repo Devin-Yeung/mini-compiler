@@ -46,6 +46,56 @@ Span *span_new(unsigned start, unsigned end) {
     return span;
 }
 
+TokenTy get_token_type(char *lexeme) {
+    switch (lexeme[0]) {
+        case '?':
+            return QuestionMark;
+        case ':':
+            return Colon;
+        case ';':
+            return Semicolon;
+        case '(':
+            return LeftParen;
+        case ')':
+            return RightParen;
+        case '+':
+            return Plus;
+        case '&':
+            return Ampersand;
+        case '-': /* -> is the only valid token start with - sign */
+            return Arrow;
+        case '<':
+            return Less;
+        case '=':
+            return Equal;
+        case '[':
+            return Comment;
+    }
+
+    if (strcmp(lexeme, "func") == 0) {
+        return FuncDecl;
+    }
+
+    if (strcmp(lexeme, "T") == 0 || strcmp(lexeme, "F") == 0) {
+        return BoolLit;
+    }
+
+    if (strcmp(lexeme, "bool") == 0) {
+        return BoolDecl;
+    }
+
+    if (strcmp(lexeme, "nat") == 0) {
+        return NatDecl;
+    }
+
+    if (isdigit(lexeme[0])) {
+        return NatLit;
+    }
+    else {
+        return Identifier;
+    }
+}
+
 Lexer *lexer_new(char *src) {
     Lexer *lexer = malloc(sizeof(Lexer));
 
@@ -95,7 +145,7 @@ Token *lexer_next_token(Lexer *lexer) {
                     Token *token = (Token *)malloc(sizeof(Token));
                     token->lexeme = lexer->src + lexer->start;
                     token->span = span_new(lexer->start, lexer->end);
-                    token->ty = BoolLit;  // TODO
+                    token->ty = get_token_type(token->lexeme);
 
                     lexer->start = lexer->end + 1;
                     lexer->end = lexer->start;
