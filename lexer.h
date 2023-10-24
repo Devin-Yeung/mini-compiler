@@ -36,7 +36,7 @@ typedef enum TokenTy {
  * @param lexeme
  * @return token type of the lexeme
  */
-TokenTy get_token_type(char* lexeme);
+TokenTy get_token_type(char *lexeme);
 
 typedef struct Token {
     char *lexeme;
@@ -45,6 +45,7 @@ typedef struct Token {
 } Token;
 
 Token *eof_token();
+char *debug_token(Token *token);
 
 typedef struct DFA {
     const int (*table)[9];    /* TODO: better Solution? */

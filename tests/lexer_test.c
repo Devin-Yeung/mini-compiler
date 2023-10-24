@@ -19,7 +19,7 @@ void parse(char* s) {
             printf("EOF!\n");
             break;
         } else {
-            printf("Receive token: %s\n", next->lexeme);
+            printf("Receive: %s\n", debug_token(next));
         }
     }
 }

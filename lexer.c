@@ -39,6 +39,84 @@ Token *eof_token() {
     return token;
 }
 
+char *debug_token(Token *token) {
+    char *buf = (char *)malloc(sizeof(char) * 256);
+    switch (token->ty) {
+        case BoolLit: /* Boolean Literal */
+            sprintf(buf, "BoolLit(%s) at Span (%u, %u)", token->lexeme,
+                    token->span->start, token->span->end);
+            break;
+        case NatLit: /* Natural Number Literal */
+            sprintf(buf, "NatLit(%s)  at Span (%u, %u)", token->lexeme,
+                    token->span->start, token->span->end);
+            break;
+        case BoolDecl: /* The variable type Boolean */
+            sprintf(buf, "BoolDecl    at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case NatDecl: /* The variable type Natural */
+            sprintf(buf, "NatDecl     at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case FuncDecl: /* The variable type Function */
+            sprintf(buf, "FuncDecl    at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case QuestionMark: /* ? */
+            sprintf(buf, "Token('?')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Colon: /* : */
+            sprintf(buf, "Token(':')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Semicolon: /* ; */
+            sprintf(buf, "Token(';')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case LeftParen: /* ( */
+            sprintf(buf, "Token('(')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case RightParen: /* ) */
+            sprintf(buf, "Token(')')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Plus: /* + */
+            sprintf(buf, "Token('+')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Ampersand: /* & */
+            sprintf(buf, "Token('&')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Arrow: /* -> */
+            sprintf(buf, "Token('->') at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Less: /* < */
+            sprintf(buf, "Token('<')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Equal: /* = */
+            sprintf(buf, "Token('=')  at Span (%u, %u)", token->span->start,
+                    token->span->end);
+            break;
+        case Comment: /* [] */
+            sprintf(buf, "Comment(%s) at Span (%u, %u)", token->lexeme,
+                    token->span->start, token->span->end);
+            break;
+        case Identifier: /* Identifier */
+            sprintf(buf, "Ident(%s)   at Span (%u, %u)", token->lexeme,
+                    token->span->start, token->span->end);
+            break;
+        case Eof: /* End of file */
+            sprintf(buf, "EOF\n");
+            break;
+    }
+    return buf;
+}
+
 Span *span_new(unsigned start, unsigned end) {
     Span *span = (Span *)malloc(sizeof(Span));
     span->start = start;
@@ -90,8 +168,7 @@ TokenTy get_token_type(char *lexeme) {
 
     if (isdigit(lexeme[0])) {
         return NatLit;
-    }
-    else {
+    } else {
         return Identifier;
     }
 }
