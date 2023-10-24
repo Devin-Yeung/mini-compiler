@@ -1,4 +1,5 @@
 #include "../lexer.h"
+#include "../slog.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -25,5 +26,7 @@ void parse(char* s) {
 }
 
 int main() {
+    slog_init(NULL, SLOG_FLAGS_ALL, 1);
     parse("abc   def   func  1234   ");
+    slog_destroy();
 }

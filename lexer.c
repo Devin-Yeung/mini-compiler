@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "slog.h"
+
 void dfa_reset(DFA *dfa) { dfa->state = dfa->start; };
 
 void dfa_next(DFA *dfa, char c) {
@@ -186,20 +188,21 @@ Lexer *lexer_new(char *src) {
 }
 
 Token *lexer_next_token(Lexer *lexer) {
-    printf("Getting next token, start from %u\n", lexer->start);
+    slog_debug("Getting next token, start from %u", lexer->start);
 
     if (lexer->start > lexer->len) {
-        printf("EOF reached\n");
+        slog_info("EOF reached");
         return eof_token();
     }
 
     unsigned cursor = lexer->start;
     while (cursor <= lexer->len) {
-        printf("Cursor at src[%u] = [%c]\n", cursor, lexer->src[cursor]);
-        char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '\0';
-        printf("Peek   at src[%u] = [%c]\n", cursor + 1, peek);
+        slog_debug("Cursor at src[%u] = [%c]", cursor,
+                   lexer->src[cursor] == '\0' ? '@' : lexer->src[cursor]);
+        char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '@';
+        slog_debug("Peek   at src[%u] = [%c]", cursor + 1, peek);
         if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
-            printf("Whitespace detected, Skip\n");
+            slog_debug("Whitespace detected, Skip");
             cursor += 1;
             // reset span
             lexer->start = cursor;
@@ -210,13 +213,14 @@ Token *lexer_next_token(Lexer *lexer) {
             // if next char is whitespace or '\0'
             // which indicates current token is done
             if (isspace(peek) || peek == '\0') {
-                printf("Whitespace peeked, check whether to accept\n");
+                slog_debug("Whitespace peeked, check whether to accept");
                 if (dfa_is_accept(lexer->dfa)) {
                     // trick, set whitespace to '\0' to slice the string
                     lexer->src[cursor + 1] = '\0';
-                    printf("DFA accepted, set src[%u] to \\0\n", cursor + 1);
-                    printf("accept:「%s」 => span(%u, %u)\n",
-                           lexer->src + lexer->start, lexer->start, lexer->end);
+                    slog_debug("DFA accepted, set src[%u] to \\0", cursor + 1);
+                    slog_debug("accept:「%s」 => span(%u, %u)",
+                               lexer->src + lexer->start, lexer->start,
+                               lexer->end);
                     dfa_reset(lexer->dfa);
 
                     Token *token = (Token *)malloc(sizeof(Token));

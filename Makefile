@@ -30,11 +30,14 @@ main: build/func.o
 build:
 	mkdir build
 
-dfa_test: build/dfa_test.o build/lexer.o
-	$(CC) $(CFLAGS) -o build/dfa_test build/dfa_test.o build/lexer.o
+dfa_test: build/dfa_test.o build/lexer.o build/slog.o
+	$(CC) $(CFLAGS) -o build/dfa_test build/dfa_test.o build/lexer.o build/slog.o
 
-lexer_test: build build/lexer_test.o build/lexer.o
-	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o
+lexer_test: build build/lexer_test.o build/lexer.o build/slog.o
+	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o build/slog.o
+
+build/slog.o:
+	$(CC) $(CFLAGS) -c slog.c -o build/slog.o
 
 build/lexer_test.o: build tests/lexer_test.c
 	$(CC) $(CFLAGS) -c tests/lexer_test.c -o build/lexer_test.o
