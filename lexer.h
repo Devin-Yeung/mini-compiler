@@ -8,6 +8,8 @@ typedef struct Span {
     unsigned end;
 } Span;
 
+Span *span_new(unsigned start, unsigned end);
+
 typedef enum TokenTy {
     BoolLit,      /* Boolean Literal */
     NatLit,       /* Natural Number Literal */
@@ -26,13 +28,16 @@ typedef enum TokenTy {
     Equal,        /* = */
     Comment,      /* [] */
     Identifier,   /* Identifier */
+    Eof,          /* End of file */
 } TokenTy;
 
 typedef struct Token {
     char *lexeme;
-    Span span;
+    Span *span;
     TokenTy ty;
 } Token;
+
+Token *eof_token();
 
 typedef struct DFA {
     const int (*table)[9];    /* TODO: better Solution? */

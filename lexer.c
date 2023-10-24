@@ -31,6 +31,21 @@ bool dfa_matches(DFA *dfa, const char *s) {
     return accept;
 };
 
+Token *eof_token() {
+    Token *token = (Token *)malloc(sizeof(Token));
+    token->lexeme = "";  // TODO: should prevent this from being freed
+    token->span = NULL;
+    token->ty = Eof;
+    return token;
+}
+
+Span *span_new(unsigned start, unsigned end) {
+    Span *span = (Span *)malloc(sizeof(Span));
+    span->start = start;
+    span->end = end;
+    return span;
+}
+
 Lexer *lexer_new(char *src) {
     Lexer *lexer = malloc(sizeof(Lexer));
 
@@ -45,12 +60,19 @@ Lexer *lexer_new(char *src) {
 
 Token *lexer_next_token(Lexer *lexer) {
     printf("Getting next token, start from %u\n", lexer->start);
+
+    if (lexer->start > lexer->len) {
+        printf("EOF reached\n");
+        return eof_token();
+    }
+
     unsigned cursor = lexer->start;
     while (cursor <= lexer->len) {
         printf("Cursor at src[%u] = [%c]\n", cursor, lexer->src[cursor]);
         char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '\0';
         printf("Peek   at src[%u] = [%c]\n", cursor + 1, peek);
         if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
+            printf("Whitespace detected, Skip\n");
             cursor += 1;
             // reset span
             lexer->start = cursor;
@@ -70,8 +92,15 @@ Token *lexer_next_token(Lexer *lexer) {
                            lexer->src + lexer->start, lexer->start, lexer->end);
                     dfa_reset(lexer->dfa);
 
+                    Token *token = (Token *)malloc(sizeof(Token));
+                    token->lexeme = lexer->src + lexer->start;
+                    token->span = span_new(lexer->start, lexer->end);
+                    token->ty = BoolLit;  // TODO
+
                     lexer->start = lexer->end + 1;
                     lexer->end = lexer->start;
+
+                    return token;
                 }
             } else {
                 lexer->end += 1;
@@ -81,5 +110,5 @@ Token *lexer_next_token(Lexer *lexer) {
         }
     }
 
-    return NULL;
+    return eof_token();
 }

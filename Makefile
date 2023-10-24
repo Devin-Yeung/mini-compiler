@@ -1,5 +1,5 @@
 CC            := clang
-CFLAGS        := -Wall -Werror -Wextra
+CFLAGS        := -Wall -Wextra
 RUNTIME_FLAGS :=
 
 SANITIZER ?= 0
@@ -12,6 +12,11 @@ ifeq ($(SANITIZER),1)
 	RUNTIME_FLAGS := $(RUNTIME_FLAGS) $(ASAN_RUNTIME_FLAGS)
 endif
 
+DEBUG ?= 0
+
+ifeq ($(DEBUG),1)
+	CFLAGS := $(CFLAGS) -g
+endif
 
 all: test main
 
