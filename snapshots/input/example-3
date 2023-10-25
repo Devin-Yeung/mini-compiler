@@ -1,0 +1,7 @@
+fun recp nat x nat i nat j ->
+	x = 0 & i < x ? 0 :
+	0 < x & x = i ? j :
+	(recp x i+1 j+1)
+;
+fun pred nat x -> T ? (recp x 1 0) : 0;
+T ? (pred 2) : 0

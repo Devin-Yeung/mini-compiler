@@ -121,6 +121,10 @@ char *debug_token(Token *token) {
         case Eof: /* End of file */
             snprintf(buf, bufsz, "EOF\n");
             break;
+        case Invalid: /* Invalid token */
+            snprintf(buf, bufsz, "Invalid(%s) at Span (%u, %u)", token->lexeme,
+                     token->span->start, token->span->end);
+            break;
     }
     return buf;
 }
@@ -239,27 +243,27 @@ Token *lexer_next_token(Lexer *lexer) {
                 slog_debug(
                     "DFA checking condition satisfied, check DFA to decide "
                     "whether to accept");
+
+                Token *token = (Token *)malloc(sizeof(Token));
+                unsigned token_len = lexer->end - lexer->start + 1;
+                char *lexeme = (char *)malloc(sizeof(char) * (token_len + 1));
+                token->lexeme =
+                    strncpy(lexeme, lexer->src + lexer->start, token_len);
+                token->lexeme[token_len] = '\0';
+                token->span = span_new(lexer->start, lexer->end);
+
                 if (dfa_is_accept(lexer->dfa)) {
-                    dfa_reset(lexer->dfa);
-
-                    Token *token = (Token *)malloc(sizeof(Token));
-                    unsigned token_len = lexer->end - lexer->start + 1;
-                    char *lexeme =
-                        (char *)malloc(sizeof(char) * (token_len + 1));
-                    token->lexeme =
-                        strncpy(lexeme, lexer->src + lexer->start, token_len);
-                    token->lexeme[token_len] = '\0';
-                    token->span = span_new(lexer->start, lexer->end);
                     token->ty = get_token_type(token->lexeme);
-
                     slog_debug("accept:「%s」 => span(%u, %u)", token->lexeme,
                                lexer->start, lexer->end);
-
-                    lexer->start = lexer->end + 1;
-                    lexer->end = lexer->start;
-
-                    return token;
+                } else {
+                    token->ty = Invalid;
+                    slog_warn("The lexeme is rejected by the DFA");
                 }
+                dfa_reset(lexer->dfa);
+                lexer->start = lexer->end + 1;
+                lexer->end = lexer->start;
+                return token;
             } else {
                 lexer->end += 1;
             }

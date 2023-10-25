@@ -30,6 +30,7 @@ typedef enum TokenTy {
     Comment,      /* [] */
     Identifier,   /* Identifier */
     Eof,          /* End of file */
+    Invalid,      /* Invalid token */
 } TokenTy;
 
 /**

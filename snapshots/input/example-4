@@ -1,0 +1,4 @@
+fun f1 -> 1;
+fun f2 nat x -> T ? x - 1 : 0;
+fun f3 bool x -> T ? x & F : 0;
+1 ? f2 2 : 1
