@@ -42,78 +42,79 @@ Token *eof_token() {
 }
 
 char *debug_token(Token *token) {
-    char *buf = (char *)malloc(sizeof(char) * 256);
+    size_t bufsz = 256;
+    char *buf = (char *)malloc(sizeof(char) * bufsz);
     switch (token->ty) {
         case BoolLit: /* Boolean Literal */
-            sprintf(buf, "BoolLit(%s) at Span (%u, %u)", token->lexeme,
-                    token->span->start, token->span->end);
+            snprintf(buf, bufsz, "BoolLit(%s) at Span (%u, %u)", token->lexeme,
+                     token->span->start, token->span->end);
             break;
         case NatLit: /* Natural Number Literal */
-            sprintf(buf, "NatLit(%s)  at Span (%u, %u)", token->lexeme,
-                    token->span->start, token->span->end);
+            snprintf(buf, bufsz, "NatLit(%s)  at Span (%u, %u)", token->lexeme,
+                     token->span->start, token->span->end);
             break;
         case BoolDecl: /* The variable type Boolean */
-            sprintf(buf, "BoolDecl    at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "BoolDecl    at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case NatDecl: /* The variable type Natural */
-            sprintf(buf, "NatDecl     at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "NatDecl     at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case FuncDecl: /* The variable type Function */
-            sprintf(buf, "FuncDecl    at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "FuncDecl    at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case QuestionMark: /* ? */
-            sprintf(buf, "Token('?')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('?')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Colon: /* : */
-            sprintf(buf, "Token(':')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token(':')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Semicolon: /* ; */
-            sprintf(buf, "Token(';')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token(';')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case LeftParen: /* ( */
-            sprintf(buf, "Token('(')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('(')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case RightParen: /* ) */
-            sprintf(buf, "Token(')')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token(')')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Plus: /* + */
-            sprintf(buf, "Token('+')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('+')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Ampersand: /* & */
-            sprintf(buf, "Token('&')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('&')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Arrow: /* -> */
-            sprintf(buf, "Token('->') at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('->') at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Less: /* < */
-            sprintf(buf, "Token('<')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('<')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Equal: /* = */
-            sprintf(buf, "Token('=')  at Span (%u, %u)", token->span->start,
-                    token->span->end);
+            snprintf(buf, bufsz, "Token('=')  at Span (%u, %u)",
+                     token->span->start, token->span->end);
             break;
         case Comment: /* [] */
-            sprintf(buf, "Comment(%s) at Span (%u, %u)", token->lexeme,
-                    token->span->start, token->span->end);
+            snprintf(buf, bufsz, "Comment(%s) at Span (%u, %u)", token->lexeme,
+                     token->span->start, token->span->end);
             break;
         case Identifier: /* Identifier */
-            sprintf(buf, "Ident(%s)   at Span (%u, %u)", token->lexeme,
-                    token->span->start, token->span->end);
+            snprintf(buf, bufsz, "Ident(%s)   at Span (%u, %u)", token->lexeme,
+                     token->span->start, token->span->end);
             break;
         case Eof: /* End of file */
-            sprintf(buf, "EOF\n");
+            snprintf(buf, bufsz, "EOF\n");
             break;
     }
     return buf;
@@ -249,6 +250,4 @@ void destroy_token(Token *token) {
     free(token);
 }
 
-void destroy_lexer(Lexer *lexer) {
-    free(lexer);
-}
+void destroy_lexer(Lexer *lexer) { free(lexer); }
