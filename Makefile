@@ -24,8 +24,8 @@ test: dfa_test lexer_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
 
-main: build/func.o
-	$(CC) $(CFLAGS) -o build/func build/func.o
+main: build/func.o build/lexer.o build/slog.o
+	$(CC) $(CFLAGS) -o build/func build/lexer.o build/slog.o build/func.o
 
 build:
 	mkdir build
