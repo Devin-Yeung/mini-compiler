@@ -33,6 +33,6 @@ void parse(char* s) {
 
 int main() {
     slog_init(NULL, SLOG_FLAGS_ALL, 1);
-    parse("abc   def   func  1234   ");
+    parse("abc   def   func  1234   a");
     slog_destroy();
 }

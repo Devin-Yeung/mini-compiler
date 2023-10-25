@@ -200,8 +200,9 @@ Token *lexer_next_token(Lexer *lexer) {
     while (cursor <= lexer->len) {
         slog_debug("Cursor at src[%u] = [%c]", cursor,
                    lexer->src[cursor] == '\0' ? '@' : lexer->src[cursor]);
-        char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '@';
-        slog_debug("Peek   at src[%u] = [%c]", cursor + 1, peek);
+        char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '\0';
+        slog_debug("Peek   at src[%u] = [%c]", cursor + 1,
+                   peek == '\0' ? '@' : peek);
         if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
             slog_debug("Whitespace detected, Skip");
             cursor += 1;
