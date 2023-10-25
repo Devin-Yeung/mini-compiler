@@ -230,10 +230,6 @@ Token *lexer_next_token(Lexer *lexer) {
                     "DFA checking condition satisfied, check DFA to decide "
                     "whether to accept");
                 if (dfa_is_accept(lexer->dfa)) {
-                    slog_debug("DFA accepted, set src[%u] to \\0", cursor + 1);
-                    slog_debug("accept:「%s」 => span(%u, %u)",
-                               lexer->src + lexer->start, lexer->start,
-                               lexer->end);
                     dfa_reset(lexer->dfa);
 
                     Token *token = (Token *)malloc(sizeof(Token));
@@ -245,6 +241,9 @@ Token *lexer_next_token(Lexer *lexer) {
                     token->lexeme[token_len] = '\0';
                     token->span = span_new(lexer->start, lexer->end);
                     token->ty = get_token_type(token->lexeme);
+
+                    slog_debug("accept:「%s」 => span(%u, %u)", token->lexeme,
+                               lexer->start, lexer->end);
 
                     lexer->start = lexer->end + 1;
                     lexer->end = lexer->start;
