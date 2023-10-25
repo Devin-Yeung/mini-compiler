@@ -35,7 +35,8 @@ bool dfa_matches(DFA *dfa, const char *s) {
 
 Token *eof_token() {
     Token *token = (Token *)malloc(sizeof(Token));
-    token->lexeme = "";  // TODO: should prevent this from being freed
+    token->lexeme = (char *)malloc(sizeof(char));
+    token->lexeme[0] = '\0';
     token->span = NULL;
     token->ty = Eof;
     return token;
@@ -229,8 +230,6 @@ Token *lexer_next_token(Lexer *lexer) {
                     "DFA checking condition satisfied, check DFA to decide "
                     "whether to accept");
                 if (dfa_is_accept(lexer->dfa)) {
-                    // trick, set whitespace to '\0' to slice the string
-                    lexer->src[cursor + 1] = '\0';
                     slog_debug("DFA accepted, set src[%u] to \\0", cursor + 1);
                     slog_debug("accept:「%s」 => span(%u, %u)",
                                lexer->src + lexer->start, lexer->start,
@@ -238,7 +237,11 @@ Token *lexer_next_token(Lexer *lexer) {
                     dfa_reset(lexer->dfa);
 
                     Token *token = (Token *)malloc(sizeof(Token));
-                    token->lexeme = lexer->src + lexer->start;
+                    unsigned token_len = lexer->end - lexer->start + 1;
+                    char *lexeme =
+                        (char *)malloc(sizeof(char) * (token_len + 1));
+                    token->lexeme =
+                        strncpy(lexeme, lexer->src + lexer->start, token_len);
                     token->span = span_new(lexer->start, lexer->end);
                     token->ty = get_token_type(token->lexeme);
 
@@ -260,6 +263,7 @@ Token *lexer_next_token(Lexer *lexer) {
 
 void destroy_token(Token *token) {
     free(token->span);
+    free(token->lexeme);
     free(token);
 }
 
