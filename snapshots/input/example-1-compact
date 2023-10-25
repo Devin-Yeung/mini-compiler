@@ -1,0 +1,2 @@
+fun suc nat x->T?x+1:0;
+T?(suc 0)+2:0+1
