@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "lexer.h"
 #include "slog.h"
@@ -51,7 +52,12 @@ void lexical_parse(char *s) {
 }
 
 int main(int argc, char *argv[]) {
-    slog_init(NULL, SLOG_FLAGS_ALL, 1);
+    bool enable_log =
+        getenv("LOG") != NULL && (strcmp(getenv("LOG"), "1") == 0);
+
+    if (enable_log) {
+        slog_init(NULL, SLOG_FLAGS_ALL, 1);
+    }
     const char *filename = argv[1];
     char *src = read_to_string(filename);
 
@@ -59,6 +65,9 @@ int main(int argc, char *argv[]) {
         lexical_parse(src);
         free(src);
     }
-    slog_destroy();
+
+    if (enable_log) {
+        slog_destroy();
+    }
     return 0;
 }
