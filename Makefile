@@ -15,7 +15,7 @@ endif
 DEBUG ?= 0
 
 ifeq ($(DEBUG),1)
-	CFLAGS := $(CFLAGS) -g
+	CFLAGS := $(CFLAGS) -g -DLOG_USE_COLOR
 endif
 
 all: test main
