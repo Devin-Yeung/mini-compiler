@@ -24,20 +24,20 @@ test: dfa_test lexer_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
 
-main: build/func.o build/lexer.o build/slog.o
-	$(CC) $(CFLAGS) -o build/func build/lexer.o build/slog.o build/func.o
+main: build/func.o build/lexer.o build/log.o
+	$(CC) $(CFLAGS) -o build/func build/lexer.o build/log.o build/func.o
 
 build:
 	mkdir build
 
-dfa_test: build/dfa_test.o build/lexer.o build/slog.o
-	$(CC) $(CFLAGS) -o build/dfa_test build/dfa_test.o build/lexer.o build/slog.o
+dfa_test: build/dfa_test.o build/lexer.o build/log.o
+	$(CC) $(CFLAGS) -o build/dfa_test build/dfa_test.o build/lexer.o build/log.o
 
-lexer_test: build build/lexer_test.o build/lexer.o build/slog.o
-	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o build/slog.o
+lexer_test: build build/lexer_test.o build/lexer.o build/log.o
+	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o build/log.o
 
-build/slog.o:
-	$(CC) $(CFLAGS) -c slog.c -o build/slog.o
+build/log.o:
+	$(CC) $(CFLAGS) -c log.c -o build/log.o
 
 build/lexer_test.o: build tests/lexer_test.c
 	$(CC) $(CFLAGS) -c tests/lexer_test.c -o build/lexer_test.o

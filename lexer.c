@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "slog.h"
+#include "log.h"
 
 void dfa_reset(DFA *dfa) { dfa->state = dfa->start; };
 
@@ -214,22 +214,22 @@ Lexer *lexer_new(char *src) {
 }
 
 Token *lexer_next_token(Lexer *lexer) {
-    slog_debug("Getting next token, start from %u", lexer->start);
+    log_debug("Getting next token, start from %u", lexer->start);
 
     if (lexer->start > lexer->len) {
-        slog_info("EOF reached");
+        log_info("EOF reached");
         return eof_token();
     }
 
     unsigned cursor = lexer->start;
     while (cursor <= lexer->len) {
-        slog_debug("Cursor at src[%u] = [%c]", cursor,
-                   lexer->src[cursor] == '\0' ? '@' : lexer->src[cursor]);
+        log_debug("Cursor at src[%u] = [%c]", cursor,
+                  lexer->src[cursor] == '\0' ? '@' : lexer->src[cursor]);
         char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '\0';
-        slog_debug("Peek   at src[%u] = [%c]", cursor + 1,
-                   peek == '\0' ? '@' : peek);
+        log_debug("Peek   at src[%u] = [%c]", cursor + 1,
+                  peek == '\0' ? '@' : peek);
         if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
-            slog_debug("Whitespace detected at %u, Skip", cursor);
+            log_debug("Whitespace detected at %u, Skip", cursor);
             cursor += 1;
             // reset span
             lexer->start = cursor;
@@ -240,7 +240,7 @@ Token *lexer_next_token(Lexer *lexer) {
             // if next char is whitespace or '\0'
             // which indicates current token is done
             if (need_to_check_dfa(lexer->src[cursor], peek)) {
-                slog_debug(
+                log_debug(
                     "DFA checking condition satisfied, check DFA to decide "
                     "whether to accept");
 
@@ -254,11 +254,11 @@ Token *lexer_next_token(Lexer *lexer) {
 
                 if (dfa_is_accept(lexer->dfa)) {
                     token->ty = get_token_type(token->lexeme);
-                    slog_debug("accept:「%s」 => span(%u, %u)", token->lexeme,
-                               lexer->start, lexer->end);
+                    log_debug("accept:「%s」 => span(%u, %u)", token->lexeme,
+                              lexer->start, lexer->end);
                 } else {
                     token->ty = Invalid;
-                    slog_warn("The lexeme is rejected by the DFA");
+                    log_warn("The lexeme is rejected by the DFA");
                 }
                 dfa_reset(lexer->dfa);
                 lexer->start = lexer->end + 1;

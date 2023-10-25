@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "lexer.h"
-#include "slog.h"
+#include "log.h"
 
 char *read_to_string(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
     bool enable_log =
         getenv("LOG") != NULL && (strcmp(getenv("LOG"), "1") == 0);
 
-    if (enable_log) {
-        slog_init(NULL, SLOG_FLAGS_ALL, 1);
+    if (!enable_log) {
+        log_set_quiet(true);
     }
     const char *filename = argv[1];
     char *src = read_to_string(filename);
@@ -66,8 +66,5 @@ int main(int argc, char *argv[]) {
         free(src);
     }
 
-    if (enable_log) {
-        slog_destroy();
-    }
     return 0;
 }

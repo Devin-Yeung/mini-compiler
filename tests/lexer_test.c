@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../slog.h"
+#include "../log.h"
 
 char* mutable_str(char* s) {
     char* mutable_s = (char*)malloc(strlen(s) + 1);
@@ -33,8 +33,4 @@ void parse(char* s) {
     free(mut);
 }
 
-int main() {
-    slog_init(NULL, SLOG_FLAGS_ALL, 1);
-    parse("abc   def   func  1234   a");
-    slog_destroy();
-}
+int main() { parse("abc   def   func  1234   a"); }
