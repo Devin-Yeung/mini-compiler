@@ -184,6 +184,10 @@ bool need_to_check_dfa(char cur, char peek) {
     if (isdigit(cur)) {
         return !isalpha(peek) && !isdigit(peek);
     }
+
+    if (isspace(cur) == '-' && peek == '>') {
+        return false;
+    }
     return true;
 }
 
