@@ -242,6 +242,7 @@ Token *lexer_next_token(Lexer *lexer) {
                         (char *)malloc(sizeof(char) * (token_len + 1));
                     token->lexeme =
                         strncpy(lexeme, lexer->src + lexer->start, token_len);
+                    token->lexeme[token_len] = '\0';
                     token->span = span_new(lexer->start, lexer->end);
                     token->ty = get_token_type(token->lexeme);
 
