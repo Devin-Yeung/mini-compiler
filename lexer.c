@@ -176,6 +176,16 @@ TokenTy get_token_type(char *lexeme) {
     }
 }
 
+bool need_to_check_dfa(char cur, char peek) {
+    if (isalpha(cur)) {
+        return !isalpha(peek) && !isdigit(peek);
+    }
+    if (isdigit(cur)) {
+        return !isalpha(peek) && !isdigit(peek);
+    }
+    return true;
+}
+
 Lexer *lexer_new(char *src) {
     Lexer *lexer = malloc(sizeof(Lexer));
 
@@ -204,7 +214,7 @@ Token *lexer_next_token(Lexer *lexer) {
         slog_debug("Peek   at src[%u] = [%c]", cursor + 1,
                    peek == '\0' ? '@' : peek);
         if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
-            slog_debug("Whitespace detected, Skip");
+            slog_debug("Whitespace detected at %u, Skip", cursor);
             cursor += 1;
             // reset span
             lexer->start = cursor;
@@ -214,8 +224,10 @@ Token *lexer_next_token(Lexer *lexer) {
             dfa_next(lexer->dfa, lexer->src[cursor]);
             // if next char is whitespace or '\0'
             // which indicates current token is done
-            if (isspace(peek) || peek == '\0') {
-                slog_debug("Whitespace peeked, check whether to accept");
+            if (need_to_check_dfa(lexer->src[cursor], peek)) {
+                slog_debug(
+                    "DFA checking condition satisfied, check DFA to decide "
+                    "whether to accept");
                 if (dfa_is_accept(lexer->dfa)) {
                     // trick, set whitespace to '\0' to slice the string
                     lexer->src[cursor + 1] = '\0';
