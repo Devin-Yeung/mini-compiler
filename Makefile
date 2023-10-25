@@ -57,6 +57,7 @@ build/lexer.o: build lexer.c lexer.h
 format:
 	clang-format -i *.c
 	clang-format -i *.h
+	clang-format -i tests/*.c
 
 clean: build
 	@echo "Cleaning ..."

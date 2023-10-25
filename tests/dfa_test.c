@@ -1,4 +1,5 @@
 #include <assert.h>
+
 #include "../lexer.h"
 
 int main() {

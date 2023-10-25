@@ -46,7 +46,7 @@ typedef struct Token {
 
 Token *eof_token();
 char *debug_token(Token *token);
-void destroy_token(Token* token);
+void destroy_token(Token *token);
 
 typedef struct DFA {
     const int (*table)[9];    /* TODO: better Solution? */

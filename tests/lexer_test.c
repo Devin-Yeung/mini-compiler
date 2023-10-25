@@ -1,11 +1,13 @@
 #include "../lexer.h"
-#include "../slog.h"
-#include <string.h>
-#include <stdlib.h>
+
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-char *mutable_str(char* s) {
+#include "../slog.h"
+
+char* mutable_str(char* s) {
     char* mutable_s = (char*)malloc(strlen(s) + 1);
     strcpy(mutable_s, s);
     return mutable_s;
@@ -13,7 +15,7 @@ char *mutable_str(char* s) {
 
 void parse(char* s) {
     char* mut = mutable_str(s);
-    Lexer *lexer = lexer_new(mut);
+    Lexer* lexer = lexer_new(mut);
     while (true) {
         Token* next = lexer_next_token(lexer);
         if (next->ty == Eof) {
