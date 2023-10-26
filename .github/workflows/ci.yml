@@ -42,6 +42,8 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "15.0"
+      - name: Install lcov
+        run: sudo apt-get -y install lcov
       - name: Get Codecov Report
         run: make codecov
         env:
