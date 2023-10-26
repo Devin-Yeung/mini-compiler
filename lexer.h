@@ -2,6 +2,7 @@
 #define MINI_COMPILER_LEXER_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef struct Span {
     unsigned start;
@@ -9,6 +10,7 @@ typedef struct Span {
 } Span;
 
 Span *span_new(unsigned start, unsigned end);
+void destroy_span(Span *span);
 
 typedef enum TokenTy {
     BoolLit,      /* Boolean Literal */
@@ -66,11 +68,11 @@ typedef struct Lexer {
     DFA *dfa;
     unsigned start; /* start position of the current lexeme */
     unsigned end;   /* end position of the current lexeme */
-    char *src;
+    const char *src;
     unsigned len; /* len of the source code, null byte EXCLUDED */
 } Lexer;
 
-Lexer *lexer_new(char *src);
+Lexer *lexer_new(const char *src);
 Token *lexer_next_token(Lexer *lexer);
 void destroy_lexer(Lexer *lexer);
 
