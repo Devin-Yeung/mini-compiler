@@ -120,16 +120,16 @@ mod tests {
     #[test]
     fn builder() {
         let tester =
-            TesterBuilder::new("foobar.hs", module_path!(), env!("CARGO_MANIFEST_DIR")).build();
+            TesterBuilder::new("foobar", module_path!(), env!("CARGO_MANIFEST_DIR")).build();
         assert!(tester
             .source_path
-            .ends_with("snapshots/unittest/tester/input/foobar.hs"));
+            .ends_with("snapshots/unittest/tester/input/foobar"));
         assert!(tester
             .snapshot_path
             .ends_with("snapshots/unittest/tester/output"));
         assert!(path!(
             env!("CARGO_MANIFEST_DIR").into(),
-            "snapshots/unittest/tester/input/foobar.hs"
+            "snapshots/unittest/tester/input/foobar"
         )
         .exists());
         assert!(path!(

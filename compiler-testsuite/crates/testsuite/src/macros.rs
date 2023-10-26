@@ -42,7 +42,7 @@ macro_rules! unittest {
         #[test]
         fn $name() {
             $crate::_macro_support::source_exec(
-                concat!(stringify!($name), ".hs"),
+                concat!(stringify!($name), ""),
                 ::std::module_path!(),
                 ::std::env!("CARGO_MANIFEST_DIR"),
                 $closure,
@@ -54,7 +54,7 @@ macro_rules! unittest {
         #[test]
         fn $name() {
             $crate::_macro_support::source_exec(
-                concat!(stringify!($name), ".hs"),
+                concat!(stringify!($name), ""),
                 $pin_to,
                 ::std::env!("CARGO_MANIFEST_DIR"),
                 $closure,
