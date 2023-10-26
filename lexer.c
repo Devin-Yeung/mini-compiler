@@ -137,6 +137,13 @@ Span *span_new(unsigned start, unsigned end) {
     return span;
 }
 
+void destroy_span(Span *span) {
+    if (span == NULL) {
+        return;
+    }
+    free(span);
+}
+
 TokenTy get_token_type(char *lexeme) {
     switch (lexeme[0]) {
         case ',':
@@ -239,7 +246,7 @@ char *pretty_ascii(char ascii, char *buf, size_t bufsz) {
     return buf;
 }
 
-Lexer *lexer_new(char *src) {
+Lexer *lexer_new(const char *src) {
     Lexer *lexer = malloc(sizeof(Lexer));
 
     lexer->dfa = &LEXER_DFA;
@@ -327,7 +334,7 @@ Token *lexer_next_token(Lexer *lexer) {
 }
 
 void destroy_token(Token *token) {
-    free(token->span);
+    destroy_span(token->span);
     free(token->lexeme);
     free(token);
 }
