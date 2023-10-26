@@ -188,7 +188,12 @@ TokenTy get_token_type(char *lexeme) {
     }
 }
 
-bool need_to_check_dfa(char cur, char peek) {
+bool need_to_check_dfa(char cur, char peek, bool comment) {
+    // never check dfa if not reach the end of comment
+    if (cur != ']' && comment) {
+        return false;
+    }
+
     if (isalpha(cur)) {
         return !isalpha(peek) && !isdigit(peek);
     }
@@ -255,14 +260,26 @@ Token *lexer_next_token(Lexer *lexer) {
     }
 
     unsigned cursor = lexer->start;
+    bool comment = false;
     while (cursor <= lexer->len) {
+        switch (lexer->src[cursor]) {
+            case '[':
+                comment = true;
+                break;
+            case ']':
+                comment = false;
+                log_debug("Comment End");
+                break;
+        }
         char buf[8];
         log_debug("Cursor at src[%u] = [%s]", cursor,
                   pretty_ascii(lexer->src[cursor], buf, 8));
         char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '\0';
         log_debug("Peek   at src[%u] = [%s]", cursor + 1,
                   pretty_ascii(peek, buf, 8));
-        if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
+        // Don't skip whitespace in comment section
+        if (!comment &&
+            (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0')) {
             log_debug("Whitespace detected at %u, Skip", cursor);
             cursor += 1;
             // reset span
@@ -273,7 +290,7 @@ Token *lexer_next_token(Lexer *lexer) {
             dfa_next(lexer->dfa, lexer->src[cursor]);
             // if next char is whitespace or '\0'
             // which indicates current token is done
-            if (need_to_check_dfa(lexer->src[cursor], peek)) {
+            if (need_to_check_dfa(lexer->src[cursor], peek, comment)) {
                 log_debug(
                     "DFA checking condition satisfied, check DFA to decide "
                     "whether to accept");
