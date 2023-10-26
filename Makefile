@@ -75,7 +75,7 @@ format:
 codecov: build main test
 	./build/dfa_test
 	./build/lexer_test
-	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.info
+	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.lcov
 
 clean: build
 	@echo "Cleaning ..."
