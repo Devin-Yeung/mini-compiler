@@ -59,8 +59,12 @@ jobs:
         env:
           CODECOV: 1
           DEBUG: 1
-      - name: Check Codecov Report
-        run: cat coverage.info
+      - name: Upload to coveralls
+        uses: coverallsapp/github-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage.info
+          compare-ref: origin/master
 
   typos:
     name: Spell Check
