@@ -201,6 +201,40 @@ bool need_to_check_dfa(char cur, char peek) {
     return true;
 }
 
+char *pretty_ascii(char ascii, char *buf, size_t bufsz) {
+    if (ascii >= '!') {
+        snprintf(buf, bufsz, "%c", ascii);
+    } else if (isspace(ascii) || ascii == '\0') {
+        switch (ascii) {
+            case 0x0:
+                snprintf(buf, bufsz, "\\0");  // NUL char
+            case 0x20:
+                snprintf(buf, bufsz, "space");  // Space
+                break;
+            case 0x0c:
+                snprintf(buf, bufsz, "\\f");  // Form feed
+                break;
+            case 0x0a:
+                snprintf(buf, bufsz, "\\n");  // Line feed
+                break;
+            case 0x0d:
+                snprintf(buf, bufsz, "\\r");  // Carriage return
+                break;
+            case 0x09:
+                snprintf(buf, bufsz, "\\t");  // Horizontal tab
+                break;
+            case 0x0b:
+                snprintf(buf, bufsz, "\\v");  // Vertical tab
+                break;
+            default:
+                // unreachable
+        }
+    } else {
+        snprintf(buf, bufsz, "%u", (uint8_t)ascii);
+    }
+    return buf;
+}
+
 Lexer *lexer_new(char *src) {
     Lexer *lexer = malloc(sizeof(Lexer));
 
@@ -223,11 +257,12 @@ Token *lexer_next_token(Lexer *lexer) {
 
     unsigned cursor = lexer->start;
     while (cursor <= lexer->len) {
-        log_debug("Cursor at src[%u] = [%c]", cursor,
-                  lexer->src[cursor] == '\0' ? '@' : lexer->src[cursor]);
+        char buf[8];
+        log_debug("Cursor at src[%u] = [%s]", cursor,
+                  pretty_ascii(lexer->src[cursor], buf, 8));
         char peek = cursor + 1 < lexer->len ? lexer->src[cursor + 1] : '\0';
-        log_debug("Peek   at src[%u] = [%c]", cursor + 1,
-                  peek == '\0' ? '@' : peek);
+        log_debug("Peek   at src[%u] = [%s]", cursor + 1,
+                  pretty_ascii(peek, buf, 8));
         if (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0') {
             log_debug("Whitespace detected at %u, Skip", cursor);
             cursor += 1;
