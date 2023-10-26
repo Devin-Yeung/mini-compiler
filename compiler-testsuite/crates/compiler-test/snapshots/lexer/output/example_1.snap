@@ -1,0 +1,12 @@
+---
+source: crates/compiler-test/src/lexer.rs
+expression: token
+---
+Token {
+    lexeme: "Hello",
+    ty: Identifier,
+    span: Span {
+        start: 0,
+        end: 4,
+    },
+}

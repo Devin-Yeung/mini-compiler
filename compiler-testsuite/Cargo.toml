@@ -6,6 +6,7 @@ resolver = "2"
 
 [workspace.dependencies]
 mini-compiler-rs = { path = "../mini-compiler-rs" }
+compiler-test = { path = "crates/compiler-test" }
 testsuite = { version = "0.1.0", path = "crates/testsuite" }
 testsuite_macros = { version = "0.1.0", path = "crates/testsuite_macros" }
 insta = { version = "1.33.0", features = ["glob"] }
