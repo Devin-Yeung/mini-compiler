@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -226,8 +227,6 @@ char *pretty_ascii(char ascii, char *buf, size_t bufsz) {
             case 0x0b:
                 snprintf(buf, bufsz, "\\v");  // Vertical tab
                 break;
-            default:
-                // unreachable
         }
     } else {
         snprintf(buf, bufsz, "%u", (uint8_t)ascii);
