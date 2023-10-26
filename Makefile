@@ -18,6 +18,13 @@ ifeq ($(DEBUG),1)
 	CFLAGS := $(CFLAGS) -g -DLOG_USE_COLOR
 endif
 
+CODECOV ?= 0
+
+ifeq ($(CODECOV),1)
+	CFLAGS := $(CFLAGS) -fprofile-arcs -ftest-coverage
+endif
+
+
 all: test main
 
 test: dfa_test lexer_test
@@ -58,6 +65,11 @@ format:
 	clang-format -i *.c
 	clang-format -i *.h
 	clang-format -i tests/*.c
+
+codecov: build main test
+	./build/dfa_test
+	./build/lexer_test
+	lcov --capture --directory build --output-file coverage.info
 
 clean: build
 	@echo "Cleaning ..."

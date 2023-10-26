@@ -31,6 +31,25 @@ jobs:
           SANITIZER: 1
           DEBUG: 1
 
+  codecov:
+    runs-on: ubuntu-latest
+    name: Codecov Report
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "15.0"
+      - name: Get Codecov Report
+        run: make codecov
+        env:
+          CODECOV: 1
+          DEBUG: 1
+      - name: Check Codecov Report
+        run: cat coverage.info
+
   typos:
     name: Spell Check
     runs-on: ubuntu-latest
