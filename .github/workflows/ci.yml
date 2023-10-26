@@ -31,6 +31,41 @@ jobs:
           SANITIZER: 1
           DEBUG: 1
 
+  codecov:
+    runs-on: ubuntu-latest
+    name: Codecov Report
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install lcov
+        working-directory: /tmp
+        run: |
+          wget  https://github.com/linux-test-project/lcov/releases/download/v2.0/lcov-2.0.tar.gz
+          tar -xvf lcov-2.0.tar.gz
+          cd lcov-2.0 && sudo make install
+      - name: Install lcov deps
+        uses: perl-actions/install-with-cpanm@stable
+        with:
+          install: |
+            Capture::Tiny
+            DateTime
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "15.0"
+      - name: Get Codecov Report
+        run: make codecov
+        env:
+          CODECOV: 1
+          DEBUG: 1
+      - name: Upload to coveralls
+        uses: coverallsapp/github-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage.lcov
+          compare-ref: origin/master
+
   typos:
     name: Spell Check
     runs-on: ubuntu-latest

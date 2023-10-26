@@ -1,4 +1,4 @@
-CC            := clang
+CC            ?= clang
 CFLAGS        := -Wall -Wextra
 RUNTIME_FLAGS :=
 
@@ -17,6 +17,19 @@ DEBUG ?= 0
 ifeq ($(DEBUG),1)
 	CFLAGS := $(CFLAGS) -g -DLOG_USE_COLOR
 endif
+
+CODECOV ?= 0
+
+ifeq ($(CODECOV),1)
+	CFLAGS := $(CFLAGS) -fprofile-arcs -ftest-coverage
+endif
+
+ifeq ($(CC), clang)
+    GCOV_TOOL = --gcov-tool llvm-cov --gcov-tool gcov
+else
+    GCOV_TOOL = --gcov-tool gcov
+endif
+
 
 all: test main
 
@@ -58,6 +71,11 @@ format:
 	clang-format -i *.c
 	clang-format -i *.h
 	clang-format -i tests/*.c
+
+codecov: build main test
+	./build/dfa_test
+	./build/lexer_test
+	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.lcov
 
 clean: build
 	@echo "Cleaning ..."
