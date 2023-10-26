@@ -75,6 +75,7 @@ format:
 codecov: build main test
 	./build/dfa_test
 	./build/lexer_test
+	LOG=1  find snapshots -type f -exec ./build/func {} \;
 	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.lcov
 
 clean: build
