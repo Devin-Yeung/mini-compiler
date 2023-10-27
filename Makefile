@@ -33,7 +33,7 @@ endif
 
 all: test main
 
-test: dfa_test lexer_test
+test: dfa_test lexer_test symbol_table_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
 
@@ -48,6 +48,8 @@ dfa_test: build/dfa_test.o build/lexer.o build/log.o
 
 lexer_test: build build/lexer_test.o build/lexer.o build/log.o
 	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o build/log.o
+
+symbol_table_test: build/symbol_table.o
 
 build/log.o:
 	$(CC) $(CFLAGS) -c log.c -o build/log.o
@@ -66,6 +68,9 @@ build/func.o: build func.c
 
 build/lexer.o: build lexer.c lexer.h
 	$(CC) $(CFLAGS) -c lexer.c -o build/lexer.o
+
+build/symbol_table.o: build symbol_table.c symbol_table.h
+	$(CC) $(CFLAGS) -c symbol_table.c -o build/symbol_table.o
 
 format:
 	clang-format -i *.c
