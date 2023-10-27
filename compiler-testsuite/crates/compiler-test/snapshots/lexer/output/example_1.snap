@@ -3,10 +3,10 @@ source: crates/compiler-test/src/lexer.rs
 expression: token
 ---
 Token {
-    lexeme: "Hello",
-    ty: Identifier,
+    lexeme: "[This is a good example.]",
+    ty: Comment,
     span: Span {
         start: 0,
-        end: 4,
+        end: 24,
     },
 }
