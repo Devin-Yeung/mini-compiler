@@ -1,0 +1,206 @@
+---
+source: crates/compiler-test/src/lexer.rs
+expression: token
+---
+[
+    Token {
+        lexeme: "fun",
+        ty: FuncDecl,
+        span: Span {
+            start: 0,
+            end: 2,
+        },
+    },
+    Token {
+        lexeme: "suc",
+        ty: Identifier,
+        span: Span {
+            start: 4,
+            end: 6,
+        },
+    },
+    Token {
+        lexeme: "nat",
+        ty: NatDecl,
+        span: Span {
+            start: 8,
+            end: 10,
+        },
+    },
+    Token {
+        lexeme: "x",
+        ty: Identifier,
+        span: Span {
+            start: 12,
+            end: 12,
+        },
+    },
+    Token {
+        lexeme: "->",
+        ty: Arrow,
+        span: Span {
+            start: 13,
+            end: 14,
+        },
+    },
+    Token {
+        lexeme: "T",
+        ty: BoolLit,
+        span: Span {
+            start: 15,
+            end: 15,
+        },
+    },
+    Token {
+        lexeme: "?",
+        ty: QuestionMark,
+        span: Span {
+            start: 16,
+            end: 16,
+        },
+    },
+    Token {
+        lexeme: "x",
+        ty: Identifier,
+        span: Span {
+            start: 17,
+            end: 17,
+        },
+    },
+    Token {
+        lexeme: "+",
+        ty: Plus,
+        span: Span {
+            start: 18,
+            end: 18,
+        },
+    },
+    Token {
+        lexeme: "1",
+        ty: NatLit,
+        span: Span {
+            start: 19,
+            end: 19,
+        },
+    },
+    Token {
+        lexeme: ":",
+        ty: Colon,
+        span: Span {
+            start: 20,
+            end: 20,
+        },
+    },
+    Token {
+        lexeme: "0",
+        ty: NatLit,
+        span: Span {
+            start: 21,
+            end: 21,
+        },
+    },
+    Token {
+        lexeme: ";",
+        ty: Semicolon,
+        span: Span {
+            start: 22,
+            end: 22,
+        },
+    },
+    Token {
+        lexeme: "T",
+        ty: BoolLit,
+        span: Span {
+            start: 24,
+            end: 24,
+        },
+    },
+    Token {
+        lexeme: "?",
+        ty: QuestionMark,
+        span: Span {
+            start: 25,
+            end: 25,
+        },
+    },
+    Token {
+        lexeme: "(",
+        ty: LeftParen,
+        span: Span {
+            start: 26,
+            end: 26,
+        },
+    },
+    Token {
+        lexeme: "suc",
+        ty: Identifier,
+        span: Span {
+            start: 27,
+            end: 29,
+        },
+    },
+    Token {
+        lexeme: "0",
+        ty: NatLit,
+        span: Span {
+            start: 31,
+            end: 31,
+        },
+    },
+    Token {
+        lexeme: ")",
+        ty: RightParen,
+        span: Span {
+            start: 32,
+            end: 32,
+        },
+    },
+    Token {
+        lexeme: "+",
+        ty: Plus,
+        span: Span {
+            start: 33,
+            end: 33,
+        },
+    },
+    Token {
+        lexeme: "2",
+        ty: NatLit,
+        span: Span {
+            start: 34,
+            end: 34,
+        },
+    },
+    Token {
+        lexeme: ":",
+        ty: Colon,
+        span: Span {
+            start: 35,
+            end: 35,
+        },
+    },
+    Token {
+        lexeme: "0",
+        ty: NatLit,
+        span: Span {
+            start: 36,
+            end: 36,
+        },
+    },
+    Token {
+        lexeme: "+",
+        ty: Plus,
+        span: Span {
+            start: 37,
+            end: 37,
+        },
+    },
+    Token {
+        lexeme: "1",
+        ty: NatLit,
+        span: Span {
+            start: 38,
+            end: 38,
+        },
+    },
+]
