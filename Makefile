@@ -49,7 +49,9 @@ dfa_test: build/dfa_test.o build/lexer.o build/log.o
 lexer_test: build build/lexer_test.o build/lexer.o build/log.o
 	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o build/log.o
 
-symbol_table_test: build/symbol_table.o
+symbol_table_test: build/symbol_table.o build/symbol_table_test.o
+	$(CC) $(CFLAGS) -o build/symbol_table_test build/symbol_table.o build/symbol_table_test.o
+	$(RUNTIME_FLAGS) ./build/symbol_table_test
 
 build/log.o:
 	$(CC) $(CFLAGS) -c log.c -o build/log.o
@@ -59,6 +61,9 @@ build/lexer_test.o: build tests/lexer_test.c
 
 build/dfa_test.o: build tests/dfa_test.c
 	$(CC) $(CFLAGS) -c tests/dfa_test.c -o build/dfa_test.o
+
+build/symbol_table_test.o: build tests/symbol_table_test.c
+	$(CC) $(CFLAGS) -c tests/symbol_table_test.c -o build/symbol_table_test.o
 
 lexer: build/lexer.o build/func.o
 	$(CC) $(CFLAGS) -o build/lexer build/lexer.o build/func.o
