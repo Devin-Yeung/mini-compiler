@@ -4,3 +4,8 @@
 .github
 *.zip
 .DS_Store
+.zipignore
+/compiler-testsuite
+/mini-compiler-rs
+cliff.toml
+CHANGELOG.md
