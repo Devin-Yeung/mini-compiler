@@ -172,7 +172,7 @@ TokenTy get_token_type(char *lexeme) {
             return Comment;
     }
 
-    if (strcmp(lexeme, "func") == 0) {
+    if (strcmp(lexeme, "fun") == 0) {
         return FuncDecl;
     }
 

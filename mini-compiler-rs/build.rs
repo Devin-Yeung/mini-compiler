@@ -1,16 +1,24 @@
 use bindgen;
-use std::env;
+use std::{env, fs};
 use std::path::PathBuf;
 
 use bindgen::CargoCallbacks;
 
 fn main() {
     // This is the directory where the `c` library is located.
-    let libdir_path = PathBuf::from("../build/ffi")
-        // Canonicalize the path as `rustc-link-search` requires an absolute
-        // path.
-        .canonicalize()
+    let libdir_path = PathBuf::from(env::var_os("OUT_DIR").unwrap())
+        .join("build");
+    let _ = fs::create_dir_all(&libdir_path);
+    // Canonicalize the path as `rustc-link-search` requires an absolute path.
+    let libdir_path = libdir_path.canonicalize()
         .expect("cannot canonicalize path");
+
+    let mut cfg = cc::Build::new();
+    cfg.file("../lexer.c")
+        .file("../log.c")
+        .out_dir(&libdir_path);
+
+    cfg.compile("compiler");
 
     // This is the path to the `c` headers file.
     let headers_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("mini_compiler.h");

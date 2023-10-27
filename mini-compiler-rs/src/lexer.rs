@@ -1,7 +1,7 @@
 use std::ffi::CString;
 
 use crate::gen::{self, destroy_lexer, lexer_next_token};
-use crate::token::Token;
+use crate::token::{Token, TokenTy};
 
 pub struct Lexer {
     inner: *mut gen::Lexer,
@@ -25,6 +25,18 @@ impl Lexer {
     }
 }
 
+impl Iterator for Lexer {
+    type Item = Token;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let token = self.next_token();
+        match token.ty {
+            TokenTy::Eof => None,
+            _ => Some(token)
+        }
+    }
+}
+
 impl Drop for Lexer {
     fn drop(&mut self) {
         unsafe {
@@ -39,10 +51,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let mut lexer = Lexer::new("abc");
-        println!("{:?}", lexer.next_token());
-        println!("{:?}", lexer.next_token());
-        println!("{:?}", lexer.next_token());
-        println!("{:?}", lexer.next_token());
+        let tokens = Lexer::new("abc").into_iter().collect::<Vec<_>>();
+        assert_eq!(tokens.len(), 1);
     }
 }
