@@ -38,4 +38,27 @@ Key *findNode(AVLTree *tree, Key k);
 Key *deleteNode(AVLTree *tree, Key k);
 void destroyTree(AVLTree *tree);
 
+typedef enum SymbolTy {
+    FuncTy,
+    BoolTy,
+    NatTy,
+} SymbolTy;
+
+typedef struct Symbol {
+    char *ident;
+    enum SymbolTy ty;
+} Symbol;
+
+Symbol *symbol_new(const char *ident, enum SymbolTy ty);
+void symbol_destroy(Symbol *symbol);
+
+typedef struct SymbolTable {
+    AVLTree *tree;
+} SymbolTable;
+
+SymbolTable *symbol_table_new();
+void symbol_table_insert(SymbolTable *table, const char *ident, SymbolTy ty);
+SymbolTy symbol_table_find(SymbolTable *table, const char *ident);
+void symbol_table_destroy(SymbolTable *table);
+
 #endif  // MINI_COMPILER_SYMBOL_TABLE_H

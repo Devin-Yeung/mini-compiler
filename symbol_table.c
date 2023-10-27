@@ -334,3 +334,49 @@ void destroyTree(AVLTree *tree) {
     destroyTreeHelper(tree->root, tree->destroy);
     free(tree);
 }
+
+static int symbolComparator(Key l, Key r) {
+    char *lhs = ((Symbol *)l)->ident;
+    char *rhs = ((Symbol *)r)->ident;
+    return strcmp(lhs, rhs);
+}
+
+static void symbolDestructor(Key k) {
+    // the string is *owned* by symbol
+    free(((Symbol *)k)->ident);
+    free(k);
+}
+
+Symbol *symbol_new(const char *ident, enum SymbolTy ty) {
+    Symbol *s = (Symbol *)malloc(sizeof(Symbol));
+    s->ident = strdup(ident);
+    s->ty = ty;
+    return s;
+}
+
+void symbol_destroy(Symbol *symbol) {
+    free(symbol->ident);
+    free(symbol);
+}
+
+SymbolTable *symbol_table_new() {
+    SymbolTable *t = (SymbolTable *)malloc(sizeof(SymbolTable));
+    t->tree = createTree(symbolComparator, symbolDestructor);
+    return t;
+}
+
+void symbol_table_insert(SymbolTable *table, const char *ident, SymbolTy ty) {
+    insertNode(table->tree, symbol_new(ident, ty));
+}
+
+SymbolTy symbol_table_find(SymbolTable *table, const char *ident) {
+    Symbol *sym = symbol_new(ident, FuncTy);  // we don't care the ty
+    SymbolTy ret = ((Symbol *)findNode(table->tree, sym))->ty;
+    symbol_destroy(sym);
+    return ret;
+}
+
+void symbol_table_destroy(SymbolTable *table) {
+    destroyTree(table->tree);
+    free(table);
+}
