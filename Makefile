@@ -43,9 +43,6 @@ main: build/func.o build/lexer.o build/log.o
 build:
 	mkdir build
 
-build/ffi: build
-	mkdir build/ffi
-
 dfa_test: build/dfa_test.o build/lexer.o build/log.o
 	$(CC) $(CFLAGS) -o build/dfa_test build/dfa_test.o build/lexer.o build/log.o
 
@@ -80,9 +77,6 @@ codecov: build main test
 	./build/lexer_test
 	LOG=1  find snapshots -type f -exec ./build/func {} \;
 	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.lcov
-
-ffi: build/ffi build/lexer.o build/log.o
-	ar rcs build/ffi/libcompiler.a build/lexer.o build/log.o
 
 clean: build
 	@echo "Cleaning ..."
