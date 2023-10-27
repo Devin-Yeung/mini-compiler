@@ -4,9 +4,9 @@ use crate::gen;
 
 #[derive(Debug)]
 pub struct Token {
-    lexeme: String,
-    ty: TokenTy,
-    span: Span,
+    pub lexeme: String,
+    pub ty: TokenTy,
+    pub span: Span,
 }
 
 impl From<*mut gen::Token> for Token {
@@ -27,8 +27,8 @@ impl From<*mut gen::Token> for Token {
 
 #[derive(Debug)]
 pub struct Span {
-    start: usize,
-    end: usize,
+    pub start: usize,
+    pub end: usize,
 }
 
 impl From<*mut gen::Span> for Span {

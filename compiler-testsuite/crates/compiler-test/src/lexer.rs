@@ -4,7 +4,7 @@ mod tests {
     use testsuite::unittest;
 
     unittest!(example_1, |_, src| {
-        let token = Lexer::new(src).next_token();
+        let token = Lexer::new(src).collect::<Vec<_>>();
         insta::assert_debug_snapshot!(token);
     });
 }
