@@ -19,10 +19,6 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "15.0"
-      - name: Build Library
-        run: make ffi
-        env:
-          DEBUG: 1
       - name: Install nightly
         uses: dtolnay/rust-toolchain@nightly
       - run: |
