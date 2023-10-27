@@ -6,11 +6,19 @@ use bindgen::CargoCallbacks;
 
 fn main() {
     // This is the directory where the `c` library is located.
-    let libdir_path = PathBuf::from("../build/ffi")
+    let libdir_path = PathBuf::from(env::var_os("OUT_DIR").unwrap())
+        .join("build")
         // Canonicalize the path as `rustc-link-search` requires an absolute
         // path.
         .canonicalize()
         .expect("cannot canonicalize path");
+
+    let mut cfg = cc::Build::new();
+    cfg.file("../lexer.c")
+        .file("../log.c")
+        .out_dir(libdir_path.clone());
+
+    cfg.compile("compiler");
 
     // This is the path to the `c` headers file.
     let headers_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("mini_compiler.h");
