@@ -13,7 +13,7 @@ expression: token
     },
     Token {
         lexeme: "fun",
-        ty: Identifier,
+        ty: FuncDecl,
         span: Span {
             start: 26,
             end: 28,
