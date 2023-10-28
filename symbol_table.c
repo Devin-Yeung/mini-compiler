@@ -18,10 +18,12 @@ static Node *insertNodeHelper(Node **proot, Key k, int (*compare)(Key, Key));
 static Node *findNodeHelper(Node *root, Key k, int (*compare)(Key, Key));
 static Node *deleteNodeHelper(Node **proot, Key k, int (*compare)(Key, Key));
 static void destroyTreeHelper(Node *root, void (*destroy)(Key k));
+static void walkTreeHelper(Node *root, void (*callback)(Key k));
 
 /* Comparator and Destructor */
 static int symbolComparator(Key l, Key r);
 static void symbolDestructor(Key k);
+static void symbolWalker(Key k);
 
 /**
  * Create a new node
@@ -324,6 +326,17 @@ Key *deleteNode(AVLTree *tree, Key k) {
     return data;
 }
 
+void walkTreeHelper(Node *root, void (*callback)(Key k)) {
+    if (root == NULL) return;
+    walkTreeHelper(root->left, callback);
+    callback(root->key);
+    walkTreeHelper(root->right, callback);
+}
+
+void walkTree(AVLTree *tree, void (*callback)(Key k)) {
+    walkTreeHelper(tree->root, callback);
+}
+
 /**
  * Destroy an AVL Tree
  *
@@ -379,4 +392,30 @@ SymbolTy symbol_table_find(SymbolTable *table, const char *ident) {
 void symbol_table_destroy(SymbolTable *table) {
     destroyTree(table->tree);
     free(table);
+}
+
+char *symbol_ty_name(SymbolTy ty, char *buf, size_t bufsz) {
+    switch (ty) {
+        case FuncTy:
+            snprintf(buf, bufsz, "Func");
+            break;
+        case BoolTy:
+            snprintf(buf, bufsz, "Bool");
+            break;
+        case NatTy:
+            snprintf(buf, bufsz, "Nat");
+            break;
+    }
+    return buf;
+}
+
+void symbolWalker(Key k) {
+    Symbol *sym = (Symbol *)k;
+    char buf[16];
+    printf("Ident(%s) => Type(%s)\n", sym->ident,
+           symbol_ty_name(sym->ty, buf, sizeof(buf)));
+}
+
+void symbol_table_walk(SymbolTable *table) {
+    walkTree(table->tree, symbolWalker);
 }

@@ -27,5 +27,6 @@ int main() {
         snprintf(buf, sizeof(buf), "%u", i);
         assert(symbol_table_find(t, buf) == gen_ty(i));
     }
+    symbol_table_walk(t);
     symbol_table_destroy(t);
 }
