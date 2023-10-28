@@ -1,6 +1,8 @@
 #ifndef MINI_COMPILER_SYMBOL_TABLE_H
 #define MINI_COMPILER_SYMBOL_TABLE_H
 
+#include <stddef.h>
+
 typedef void *Key;
 
 typedef struct Node {
@@ -36,6 +38,7 @@ AVLTree *createTree(int (*compare)(Key, Key), void (*destroy)(Key k));
 Key *insertNode(AVLTree *tree, Key k);
 Key *findNode(AVLTree *tree, Key k);
 Key *deleteNode(AVLTree *tree, Key k);
+void walkTree(AVLTree *tree, void (*callback)(Key k));
 void destroyTree(AVLTree *tree);
 
 typedef enum SymbolTy {
@@ -43,6 +46,8 @@ typedef enum SymbolTy {
     BoolTy,
     NatTy,
 } SymbolTy;
+
+char *symbol_ty_name(SymbolTy ty, char *buf, size_t bufsz);
 
 typedef struct Symbol {
     char *ident;
@@ -59,6 +64,7 @@ typedef struct SymbolTable {
 SymbolTable *symbol_table_new();
 void symbol_table_insert(SymbolTable *table, const char *ident, SymbolTy ty);
 SymbolTy symbol_table_find(SymbolTable *table, const char *ident);
+void symbol_table_walk(SymbolTable *table);
 void symbol_table_destroy(SymbolTable *table);
 
 #endif  // MINI_COMPILER_SYMBOL_TABLE_H
