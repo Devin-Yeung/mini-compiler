@@ -415,8 +415,8 @@ char *symbol_ty_name(SymbolTy ty, char *buf, size_t bufsz) {
 void symbolWalker(Key k) {
     Symbol *sym = (Symbol *)k;
     char buf[16];
-    printf("Ident(%s) => Type(%s)\n", sym->ident,
-           symbol_ty_name(sym->ty, buf, sizeof(buf)));
+    // printf("Ident(%s) => Type(%s)\n", sym->ident, symbol_ty_name(sym->ty, buf, sizeof(buf)));
+    printf("Ident(%s)\n", sym->ident); // TODO: symbol ty is known in syntactic analysis
 }
 
 void symbol_table_walk(SymbolTable *table) {

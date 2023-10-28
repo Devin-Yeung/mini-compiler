@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "lexer.h"
+#include "symbol_table.h"
 #ifdef LOG
 #include "log.h"
 #endif
@@ -37,6 +38,7 @@ char *read_to_string(const char *filename) {
 
 void lexical_parse(char *s) {
     Lexer *lexer = lexer_new(s);
+    SymbolTable* tab = symbol_table_new();
     while (true) {
         Token *next = lexer_next_token(lexer);
         if (next->ty == Eof) {
@@ -44,12 +46,18 @@ void lexical_parse(char *s) {
             destroy_token(next);
             break;
         } else {
+            if (next->ty == Identifier) {
+                symbol_table_insert(tab, next->lexeme, FuncTy); // TODO: symbol ty is known in syntactic analysis
+            }
             char *info = debug_token(next);
             printf("==> %s\n", info);
             free(info);
         }
         destroy_token(next);
     }
+    printf("\n=== Symbol table: ===\n");
+    symbol_table_walk(tab);
+    symbol_table_destroy(tab);
     destroy_lexer(lexer);
 }
 
