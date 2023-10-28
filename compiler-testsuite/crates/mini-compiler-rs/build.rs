@@ -14,8 +14,8 @@ fn main() {
         .expect("cannot canonicalize path");
 
     let mut cfg = cc::Build::new();
-    cfg.file("../lexer.c")
-        .file("../log.c")
+    cfg.file("../../../lexer.c")
+        .file("../../../log.c")
         .out_dir(&libdir_path);
 
     cfg.compile("compiler");
