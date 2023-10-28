@@ -231,6 +231,7 @@ char *pretty_ascii(char ascii, char *buf, size_t bufsz) {
         switch (ascii) {
             case 0x0:
                 snprintf(buf, bufsz, "\\0");  // NUL char
+                break;
             case 0x20:
                 snprintf(buf, bufsz, "space");  // Space
                 break;
