@@ -292,6 +292,9 @@ AVLTree *createTree(int (*compare)(Key, Key), void (*destroy)(Key k)) {
  */
 Key *insertNode(AVLTree *tree, Key k) {
     Node *inserted = insertNodeHelper(&(tree->root), k, tree->compare);
+    if (inserted == NULL) {
+        tree->destroy(k);
+    }
     return inserted ? inserted->key : NULL;
 }
 
