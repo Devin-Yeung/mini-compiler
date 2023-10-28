@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2023-10-28
+
+### Bug Fixes
+
+- Fix mem leak cause by duplicate symbol insertion
+- Fix pretty print of NUL char
+
+### Features
+
+- AVL tree data structure
+- Impl symbol table
+- More test cases to test symbol table
+- Impl symbol table walk
+- Test insert duplicate symbols into symboltable
+- Only compile `log` in debug mode
+- Display symbol table after lexical analysis
+
+### Miscellaneous Tasks
+
+- Update gitignore
+- Update zipignore
+- Clean the unused Makefile recipe
+
 ## [0.1.0] - 2023-10-27
 
 ### Bug Fixes
