@@ -3,7 +3,9 @@
 #include <string.h>
 
 #include "lexer.h"
+#ifdef LOG
 #include "log.h"
+#endif
 
 char *read_to_string(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -52,12 +54,14 @@ void lexical_parse(char *s) {
 }
 
 int main(int argc, char *argv[]) {
+#ifdef LOG
     bool enable_log =
         getenv("LOG") != NULL && (strcmp(getenv("LOG"), "1") == 0);
 
     if (!enable_log) {
         log_set_quiet(true);
     }
+#endif
     const char *filename = argv[1];
     char *src = read_to_string(filename);
 

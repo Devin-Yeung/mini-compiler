@@ -7,7 +7,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef LOG
 #include "log.h"
+#else
+// If log is not enable, just ignore the macro call
+#define log_trace(...)
+#define log_debug(...)
+#define log_info(...)
+#define log_warn(...)
+#define log_error(...)
+#define log_fatal(...)
+#endif
 
 void dfa_reset(DFA *dfa) { dfa->state = dfa->start; };
 
