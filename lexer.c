@@ -77,10 +77,6 @@ char *debug_token(Token *token) {
             snprintf(buf, bufsz, "FuncDecl    at Span (%u, %u)",
                      token->span->start, token->span->end);
             break;
-        case Comma: /* , */
-            snprintf(buf, bufsz, "Token(',')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
         case QuestionMark: /* ? */
             snprintf(buf, bufsz, "Token('?')  at Span (%u, %u)",
                      token->span->start, token->span->end);
@@ -156,8 +152,6 @@ void destroy_span(Span *span) {
 
 TokenTy get_token_type(char *lexeme) {
     switch (lexeme[0]) {
-        case ',':
-            return Comma;
         case '?':
             return QuestionMark;
         case ':':
