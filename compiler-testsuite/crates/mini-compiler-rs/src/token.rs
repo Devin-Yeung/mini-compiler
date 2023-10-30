@@ -52,7 +52,6 @@ pub enum TokenTy {
     BoolDecl,     /* The variable type Boolean */
     NatDecl,      /* The variable type Natural */
     FuncDecl,     /* The variable type Function */
-    Comma,        /* , */
     QuestionMark, /* ? */
     Colon,        /* : */
     Semicolon,    /* ; */
@@ -77,7 +76,6 @@ impl From<gen::TokenTy> for TokenTy {
             gen::TokenTy_BoolDecl => TokenTy::BoolDecl,
             gen::TokenTy_NatDecl => TokenTy::NatDecl,
             gen::TokenTy_FuncDecl => TokenTy::FuncDecl,
-            gen::TokenTy_Comma => TokenTy::Comma,
             gen::TokenTy_QuestionMark => TokenTy::QuestionMark,
             gen::TokenTy_Colon => TokenTy::Colon,
             gen::TokenTy_Semicolon => TokenTy::Semicolon,
