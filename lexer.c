@@ -29,7 +29,7 @@ typedef enum LexerState {
 void dfa_reset(DFA *dfa) { dfa->state = dfa->start; };
 
 void dfa_next(DFA *dfa, char c) {
-    dfa->state = dfa->table[(int)c][dfa->state];
+    dfa->state = dfa->table[(uint8_t)c][dfa->state];
 };
 
 bool dfa_is_accept(const DFA *dfa) {
