@@ -19,6 +19,13 @@
 #define log_fatal(...)
 #endif
 
+typedef enum LexerState {
+    LEXER_STATE_COMMENT,
+    LEXER_STATE_IDENTIFIER,
+    LEXER_STATE_NUMBER,
+    LEXER_STATE_PENDING,
+} LexerState;
+
 void dfa_reset(DFA *dfa) { dfa->state = dfa->start; };
 
 void dfa_next(DFA *dfa, char c) {
@@ -199,9 +206,9 @@ TokenTy get_token_type(char *lexeme) {
     }
 }
 
-bool need_to_check_dfa(char cur, char peek, bool comment) {
+bool need_to_check_dfa(char cur, char peek, LexerState state) {
     // never check dfa if not reach the end of comment
-    if (cur != ']' && comment) {
+    if (cur != ']' && state == LEXER_STATE_COMMENT) {
         return false;
     }
 
@@ -209,7 +216,15 @@ bool need_to_check_dfa(char cur, char peek, bool comment) {
         return !isalpha(peek) && !isdigit(peek);
     }
     if (isdigit(cur)) {
-        return !isalpha(peek) && !isdigit(peek);
+        switch (state) {
+            case LEXER_STATE_IDENTIFIER:
+                return !isalpha(peek) && !isdigit(peek);
+            case LEXER_STATE_NUMBER:
+                return !isdigit(peek);
+            default:
+                log_fatal("unexpected state reached");
+                break;
+        }
     }
 
     if (cur == '-' && peek == '>') {
@@ -272,16 +287,20 @@ Token *lexer_next_token(Lexer *lexer) {
     }
 
     unsigned cursor = lexer->start;
-    bool comment = false;
+    LexerState state = LEXER_STATE_PENDING;
     while (cursor <= lexer->len) {
-        switch (lexer->src[cursor]) {
-            case '[':
-                comment = true;
-                break;
-            case ']':
-                comment = false;
-                log_debug("Comment End");
-                break;
+        if (state == LEXER_STATE_PENDING) {
+            if (lexer->src[cursor] == '[') {
+                state = LEXER_STATE_COMMENT;
+            }
+
+            if (isdigit(lexer->src[cursor])) {
+                state = LEXER_STATE_NUMBER;
+            }
+
+            if (isalpha(lexer->src[cursor])) {
+                state = LEXER_STATE_IDENTIFIER;
+            }
         }
         char buf[8];
         log_debug("Cursor at src[%u] = [%s]", cursor,
@@ -290,7 +309,7 @@ Token *lexer_next_token(Lexer *lexer) {
         log_debug("Peek   at src[%u] = [%s]", cursor + 1,
                   pretty_ascii(peek, buf, 8));
         // Don't skip whitespace in comment section
-        if (!comment &&
+        if (state != LEXER_STATE_COMMENT &&
             (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0')) {
             log_debug("Whitespace detected at %u, Skip", cursor);
             cursor += 1;
@@ -302,7 +321,7 @@ Token *lexer_next_token(Lexer *lexer) {
             dfa_next(lexer->dfa, lexer->src[cursor]);
             // if next char is whitespace or '\0'
             // which indicates current token is done
-            if (need_to_check_dfa(lexer->src[cursor], peek, comment)) {
+            if (need_to_check_dfa(lexer->src[cursor], peek, state)) {
                 log_debug(
                     "DFA checking condition satisfied, check DFA to decide "
                     "whether to accept");
