@@ -1,0 +1,62 @@
+---
+source: crates/compiler-test/src/lexer.rs
+expression: token
+---
+[
+    Token {
+        lexeme: "fun",
+        ty: FuncDecl,
+        span: Span {
+            start: 0,
+            end: 2,
+        },
+    },
+    Token {
+        lexeme: "fun1",
+        ty: Identifier,
+        span: Span {
+            start: 4,
+            end: 7,
+        },
+    },
+    Token {
+        lexeme: "2",
+        ty: NatLit,
+        span: Span {
+            start: 9,
+            end: 9,
+        },
+    },
+    Token {
+        lexeme: "fun",
+        ty: FuncDecl,
+        span: Span {
+            start: 10,
+            end: 12,
+        },
+    },
+    Token {
+        lexeme: "1",
+        ty: NatLit,
+        span: Span {
+            start: 14,
+            end: 14,
+        },
+    },
+    Token {
+        lexeme: "foo2bar3baz",
+        ty: Identifier,
+        span: Span {
+            start: 15,
+            end: 25,
+        },
+    },
+    Token {
+        lexeme: "4",
+        ty: NatLit,
+        span: Span {
+            start: 27,
+            end: 27,
+        },
+    },
+]
