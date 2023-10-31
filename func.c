@@ -38,7 +38,7 @@ char *read_to_string(const char *filename) {
 
 void lexical_parse(char *s) {
     Lexer *lexer = lexer_new(s);
-    SymbolTable* tab = symbol_table_new();
+    SymbolTable *tab = symbol_table_new();
     while (true) {
         Token *next = lexer_next_token(lexer);
         if (next->ty == Eof) {
@@ -47,7 +47,9 @@ void lexical_parse(char *s) {
             break;
         } else {
             if (next->ty == Identifier) {
-                symbol_table_insert(tab, next->lexeme, FuncTy); // TODO: symbol ty is known in syntactic analysis
+                symbol_table_insert(
+                    tab, next->lexeme,
+                    FuncTy);  // TODO: symbol ty is known in syntactic analysis
             }
             char *info = debug_token(next);
             printf("==> %s\n", info);
