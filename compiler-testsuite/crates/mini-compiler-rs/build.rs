@@ -1,22 +1,33 @@
 use bindgen;
-use std::{env, fs};
+use std::fs::canonicalize;
 use std::path::PathBuf;
+use std::{env, fs};
 
 use bindgen::CargoCallbacks;
 
+fn c_source_files() -> impl Iterator<Item = PathBuf> {
+    let source_dir = PathBuf::from("../../../");
+    let mut paths = Vec::new();
+    for file in ["lexer.c"] {
+        paths.push(canonicalize(source_dir.join(file)).unwrap());
+    }
+    paths.into_iter()
+}
+
 fn main() {
     // This is the directory where the `c` library is located.
-    let libdir_path = PathBuf::from(env::var_os("OUT_DIR").unwrap())
-        .join("build");
+    let libdir_path = PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("build");
     let _ = fs::create_dir_all(&libdir_path);
     // Canonicalize the path as `rustc-link-search` requires an absolute path.
-    let libdir_path = libdir_path.canonicalize()
+    let libdir_path = libdir_path
+        .canonicalize()
         .expect("cannot canonicalize path");
 
     let mut cfg = cc::Build::new();
-    cfg.file("../../../lexer.c")
-        .file("../../../log.c")
-        .out_dir(&libdir_path);
+    for file in c_source_files() {
+        cfg.file(file);
+    }
+    cfg.out_dir(&libdir_path).warnings(false); // suppress warning
 
     cfg.compile("compiler");
 
@@ -33,6 +44,10 @@ fn main() {
 
     // Tell cargo to invalidate the built crate whenever the header changes.
     println!("cargo:rerun-if-changed={}", headers_path_str);
+    // Tell cargo to invalidate the built crate whenever the c source file changes.
+    for file in c_source_files() {
+        println!("cargo:rerun-if-changed={}", file.to_str().unwrap());
+    }
 
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
