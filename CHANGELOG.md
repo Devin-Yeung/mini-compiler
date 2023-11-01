@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2023-11-01
+
+### Bug Fixes
+
+- Revert comma support, comma is not a valid token
+- Parse `1fun` correctly
+- Prevent buffer overflow in DFA
+- Fix the broken tests caused by the API changes
+
+### Features
+
+- Pre-commit hook support
+- Improve cargo build script
+- Display line and column instead of span
+
+### Refactor
+
+- Migrate rust binding into testsuite
+- Refactor the `debug_token`
+
 ## [0.1.1] - 2023-10-28
 
 ### Bug Fixes
