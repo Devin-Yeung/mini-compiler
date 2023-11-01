@@ -60,87 +60,65 @@ Token *eof_token() {
     return token;
 }
 
-char *debug_token(Token *token) {
-    size_t bufsz = 256;
-    char *buf = (char *)malloc(sizeof(char) * bufsz);
+int debug_token(Token *token, char *buf, size_t bufsz) {
     switch (token->ty) {
         case BoolLit: /* Boolean Literal */
-            snprintf(buf, bufsz, "BoolLit(%s) at Span (%u, %u)", token->lexeme,
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "BoolLit(%s)", token->lexeme);
+
         case NatLit: /* Natural Number Literal */
-            snprintf(buf, bufsz, "NatLit(%s)  at Span (%u, %u)", token->lexeme,
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "NatLit(%s)", token->lexeme);
+
         case BoolDecl: /* The variable type Boolean */
-            snprintf(buf, bufsz, "BoolDecl    at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "BoolDecl");
+
         case NatDecl: /* The variable type Natural */
-            snprintf(buf, bufsz, "NatDecl     at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "NatDecl");
+
         case FuncDecl: /* The variable type Function */
-            snprintf(buf, bufsz, "FuncDecl    at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "FuncDecl");
+
         case QuestionMark: /* ? */
-            snprintf(buf, bufsz, "Token('?')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('?')");
+
         case Colon: /* : */
-            snprintf(buf, bufsz, "Token(':')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token(':')");
+
         case Semicolon: /* ; */
-            snprintf(buf, bufsz, "Token(';')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token(';')");
+
         case LeftParen: /* ( */
-            snprintf(buf, bufsz, "Token('(')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('(')");
+
         case RightParen: /* ) */
-            snprintf(buf, bufsz, "Token(')')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token(')')");
+
         case Plus: /* + */
-            snprintf(buf, bufsz, "Token('+')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('+')");
+
         case Ampersand: /* & */
-            snprintf(buf, bufsz, "Token('&')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('&')");
+
         case Arrow: /* -> */
-            snprintf(buf, bufsz, "Token('->') at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('->')");
+
         case Less: /* < */
-            snprintf(buf, bufsz, "Token('<')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('<')");
+
         case Equal: /* = */
-            snprintf(buf, bufsz, "Token('=')  at Span (%u, %u)",
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Token('=')");
+
         case Comment: /* [] */
-            snprintf(buf, bufsz, "Comment(%s) at Span (%u, %u)", token->lexeme,
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Comment(%s)", token->lexeme);
+
         case Identifier: /* Identifier */
-            snprintf(buf, bufsz, "Ident(%s)   at Span (%u, %u)", token->lexeme,
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Ident(%s)", token->lexeme);
+
         case Eof: /* End of file */
-            snprintf(buf, bufsz, "EOF\n");
-            break;
+            return snprintf(buf, bufsz, "EOF\n");
+
         case Invalid: /* Invalid token */
-            snprintf(buf, bufsz, "Invalid(%s) at Span (%u, %u)", token->lexeme,
-                     token->span->start, token->span->end);
-            break;
+            return snprintf(buf, bufsz, "Invalid(%s)", token->lexeme);
     }
-    return buf;
 }
 
 Span *span_new(unsigned start, unsigned end) {

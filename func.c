@@ -51,9 +51,9 @@ void lexical_parse(char *s) {
                     tab, next->lexeme,
                     FuncTy);  // TODO: symbol ty is known in syntactic analysis
             }
-            char *info = debug_token(next);
-            printf("==> %s\n", info);
-            free(info);
+            char buf[256];
+            debug_token(next, buf, sizeof(buf));
+            printf("==> %s\n", buf);
         }
         destroy_token(next);
     }

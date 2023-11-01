@@ -48,7 +48,7 @@ typedef struct Token {
 } Token;
 
 Token *eof_token();
-char *debug_token(Token *token);
+int debug_token(Token *token, char *buf, size_t bufsz);
 void destroy_token(Token *token);
 
 typedef struct DFA {
