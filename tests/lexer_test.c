@@ -23,9 +23,9 @@ void parse(char* s) {
             destroy_token(next);
             break;
         } else {
-            char* info = debug_token(next);
-            printf("Receive: %s\n", info);
-            free(info);
+            char buf[256];
+            debug_token(next, buf, sizeof(buf));
+            printf("Receive: %s\n", buf);
         }
         destroy_token(next);
     }
