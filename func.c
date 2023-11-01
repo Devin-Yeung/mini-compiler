@@ -8,6 +8,37 @@
 #include "log.h"
 #endif
 
+typedef struct Position {
+    unsigned line;
+    unsigned col;
+} Position;
+
+/**
+ * Convert Span representation to Position representation
+ * SAFETY: immutable borrow to the span
+ * @param span span information
+ * @param src source code
+ * @return
+ */
+Position *span_to_position(const Span *span, const char *src) {
+    Position *pos = (Position *)malloc(sizeof(Position));
+    pos->line = 1;
+    pos->col = 1;
+    for (unsigned i = 0; i < span->start; i++) {
+        if (src[i] == '\n') {
+            pos->line++;
+            pos->col = 1;
+        } else {
+            pos->col++;
+        }
+    }
+    return pos;
+}
+
+int debug_position(const Position *pos, char *buf, size_t bufsz) {
+    return snprintf(buf, bufsz, "line: %u, column %u", pos->line, pos->col);
+}
+
 char *read_to_string(const char *filename) {
     FILE *file = fopen(filename, "r");
 
@@ -52,7 +83,11 @@ void lexical_parse(char *s) {
                     FuncTy);  // TODO: symbol ty is known in syntactic analysis
             }
             char buf[256];
-            debug_token(next, buf, sizeof(buf));
+            char *ptr = buf;
+            ptr += debug_token(next, ptr, sizeof(buf));
+            ptr += snprintf(ptr, sizeof(buf), " at ");
+            ptr += debug_position(span_to_position(next->span, s), ptr,
+                                  sizeof(buf));
             printf("==> %s\n", buf);
         }
         destroy_token(next);
