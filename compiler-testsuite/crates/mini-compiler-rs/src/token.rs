@@ -45,7 +45,7 @@ impl From<*mut gen::Span> for Span {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum TokenTy {
     BoolLit,      /* Boolean Literal */
     NatLit,       /* Natural Number Literal */

@@ -10,3 +10,9 @@ mini-compiler-rs = { workspace = true }
 insta = { workspace = true, features = ["glob"] }
 testsuite = { path = "../testsuite" }
 testsuite_macros = { path = "../testsuite_macros" }
+regex_generate = "0.2.3"
+rand = "0.8.5"
+
+[[bin]]
+name = "fuzzy-tokens"
+path = "bin/fuzzy-tokens.rs"
