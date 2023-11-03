@@ -72,8 +72,23 @@ void lexical_parse(char *s) {
     SymbolTable *tab = symbol_table_new();
     while (true) {
         Token *next = lexer_next_token(lexer);
-        if (next->ty == Eof) {
+        if (next->ty == Comment) {
+            /* Skip */
+        } else if (next->ty == Eof) {
             printf("EOF Reached, Lexical Analysis Finished.\n");
+            destroy_token(next);
+            break;
+        } else if (next->ty == Invalid) {
+            char buf[256];
+            char *ptr = buf;
+            ptr +=
+                snprintf(ptr, sizeof(buf),
+                         "Error: Invalid Token '%s' found at ", next->lexeme);
+            ptr += debug_position(span_to_position(next->span, s), ptr,
+                                  sizeof(buf));
+            printf("%s\n", buf);
+            printf(
+                "Lexical Analysis Halt since an invalid token is detected!\n");
             destroy_token(next);
             break;
         } else {
