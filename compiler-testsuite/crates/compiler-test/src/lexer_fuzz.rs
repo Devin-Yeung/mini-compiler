@@ -1,4 +1,6 @@
-use crate::lexer_fuzz::FuzzyTokenTy::{BoolLit, Decl, Ident, NatLit, Punctuation, Whitespace};
+use crate::lexer_fuzz::FuzzyTokenTy::{
+    BoolLit, Comment, Decl, Ident, NatLit, Punctuation, Whitespace,
+};
 use rand;
 use rand::Rng;
 use regex_generate::{Generator, DEFAULT_MAX_REPEAT};
@@ -11,6 +13,7 @@ enum FuzzyTokenTy {
     BoolLit,
     NatLit,
     Decl,
+    Comment,
 }
 
 pub fn rand_tokens(n: usize) -> Vec<String> {
@@ -31,7 +34,7 @@ pub fn rand_tokens(n: usize) -> Vec<String> {
                     }
                 }
             },
-            Whitespace | Punctuation => { /* Do not need a explicit whitespace */ }
+            Whitespace | Punctuation | Comment => { /* Do not need a explicit whitespace */ }
         }
         prev = rand_token_ty();
         tokens.push(rand_token(prev));
@@ -50,11 +53,20 @@ fn rand_token(ty: FuzzyTokenTy) -> String {
         BoolLit => bool_lit(),
         NatLit => nat_lit(),
         Decl => declaration(),
+        Comment => comment(),
     }
 }
 
 fn rand_token_ty() -> FuzzyTokenTy {
-    let ty = vec![Ident, Whitespace, Punctuation, BoolLit, NatLit, Decl];
+    let ty = vec![
+        Ident,
+        Whitespace,
+        Punctuation,
+        BoolLit,
+        NatLit,
+        Decl,
+        Comment,
+    ];
     let mut rng = rand::thread_rng();
     let idx = rng.gen_range(0..ty.len());
     ty[idx]
@@ -85,6 +97,10 @@ fn nat_lit() -> String {
 
 fn declaration() -> String {
     random_pattern(r"bool|nat|fun")
+}
+
+fn comment() -> String {
+    random_pattern(r"\[[\x20-\x5C\x5E-\x7E]*\]")
 }
 
 fn random_pattern<P: AsRef<str>>(pattern: P) -> String {
