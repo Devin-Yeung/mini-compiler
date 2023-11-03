@@ -32,7 +32,7 @@ impl Iterator for Lexer {
         let token = self.next_token();
         match token.ty {
             TokenTy::Eof => None,
-            _ => Some(token)
+            _ => Some(token),
         }
     }
 }
