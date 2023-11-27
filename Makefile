@@ -37,8 +37,8 @@ test: dfa_test lexer_test symbol_table_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
 
-main: build/func.o build/lexer.o build/symbol_table.o build/log.o
-	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o
+main: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o
+	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o
 
 build:
 	mkdir build
@@ -76,6 +76,10 @@ build/lexer.o: build lexer.c lexer.h
 
 build/symbol_table.o: build symbol_table.c symbol_table.h
 	$(CC) $(CFLAGS) -c symbol_table.c -o build/symbol_table.o
+
+build/parser.o: build parser.c parser.h
+	$(CC) $(CFLAGS) -c parser.c -o build/parser.o
+
 
 format:
 	clang-format -i *.c
