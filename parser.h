@@ -3,6 +3,9 @@
 
 #include <string.h>
 
+#include "deque.h"
+#include "lexer.h"
+
 typedef struct Grammar {
     // TODO
 } Grammar;
@@ -24,10 +27,30 @@ typedef struct SLRTable {
     const SLRop (*shift_reduce_table)[16];  // 16 tokens
 } SLRTable;
 
+typedef char NonTerminal;
+
+typedef union {
+    NonTerminal nt;
+    Token *token;  // Take the **ownership** of the token
+} SLRSymbol;
+
+typedef enum SLRSymbolTy {
+    SLR_SYMBOL_NON_TERMINAL,
+    SLR_SYMBOL_TOKEN,
+    SLR_SYMBOL_VOID,  // Reserve for the bottom of the stack
+} SLRSymbolTy;
+
+typedef struct SLRItem {
+    SLRSymbol symbol;
+    SLRSymbolTy ty;
+    unsigned value;
+} SLRItem;
+
 typedef struct SLRParser {
     // TODO: /* stack of SLR items */
-    SLRTable *table;
+    const SLRTable *table;
     Grammar **grammar;
+    CC_Deque *stack;
 } SLRParser;
 
 const struct SLRop GOTO_TABLE[38][9] = {{{SLR_EMPTY, 0}}};
