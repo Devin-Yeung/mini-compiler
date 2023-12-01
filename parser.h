@@ -2,6 +2,7 @@
 #define MINI_COMPILER_PARSER_H
 
 #include <string.h>
+#define MAX_PRODUCTIONS 20
 
 #include "deque.h"
 #include "lexer.h"
@@ -27,7 +28,7 @@ typedef struct Production {
 
 typedef struct Grammar {
     unsigned n_prods;
-    Production *prods;
+    Production prods[MAX_PRODUCTIONS];
 } Grammar;
 
 // S' -> S

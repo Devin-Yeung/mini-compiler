@@ -2,7 +2,6 @@
 
 Grammar *grammar_init() {
     Grammar *g = malloc(sizeof(Grammar));
-    g->prods = malloc(sizeof(Production) * 19);
 
     g->prods[0] = P0;
     g->prods[1] = P1;
