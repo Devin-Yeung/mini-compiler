@@ -33,9 +33,10 @@ endif
 
 all: test main
 
-test: dfa_test lexer_test symbol_table_test
+test: dfa_test lexer_test symbol_table_test slr_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
+	$(RUNTIME_FLAGS) ./build/slr_test
 
 main: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o
 	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o
@@ -52,6 +53,10 @@ lexer_test: build build/lexer_test.o build/lexer.o build/log.o
 symbol_table_test: build/symbol_table.o build/symbol_table_test.o
 	$(CC) $(CFLAGS) -o build/symbol_table_test build/symbol_table.o build/symbol_table_test.o
 	$(RUNTIME_FLAGS) ./build/symbol_table_test
+
+slr_test: build build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o
+	$(CC) $(CFLAGS) -o build/slr_test build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o
+	$(RUNTIME_FLAGS) ./build/slr_test
 
 build/log.o:
 	$(CC) $(CFLAGS) -c log.c -o build/log.o
@@ -76,6 +81,9 @@ build/lexer.o: build lexer.c lexer.h
 
 build/symbol_table.o: build symbol_table.c symbol_table.h
 	$(CC) $(CFLAGS) -c symbol_table.c -o build/symbol_table.o
+
+build/slr_test.o: build tests/slr_test.c
+	$(CC) $(CFLAGS) -c tests/slr_test.c -o build/slr_test.o
 
 build/parser.o: build parser.c parser.h
 	$(CC) $(CFLAGS) -c parser.c -o build/parser.o
