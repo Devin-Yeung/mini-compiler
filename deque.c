@@ -463,7 +463,7 @@ void cc_deque_remove_all_cb(CC_Deque *deque, void (*cb)(void *)) {
 
 /**
  * Gets a CC_Deque element from the specified index and sets the out parameter
- * to its value. The specified index must be withing the bounds of the deque.
+ * to its value. The specified index must be within the bounds of the deque.
  *
  * @param[in] deque CC_Deque from which the element is being returned
  * @param[in] index index of the CC_Deque element
@@ -726,7 +726,7 @@ enum cc_stat cc_deque_index_of(CC_Deque const *const deque, const void *element,
 size_t cc_deque_size(CC_Deque const *const deque) { return deque->size; }
 
 /**
- * Retruns the capacity of the specified deque. The capacity of the deque is
+ * Returns the capacity of the specified deque. The capacity of the deque is
  * the maximum number of elements a CC_Deque can hold before its underlying
  * buffer needs to be resized.
  *
@@ -1128,7 +1128,7 @@ enum cc_stat cc_deque_zip_iter_add(CC_DequeZipIter *iter, void *e1, void *e2) {
         return CC_ERR_ALLOC;
     }
 
-    /* The retun status can be ignored since the checks have already been made.
+    /* The return status can be ignored since the checks have already been made.
      */
     cc_deque_add_at(iter->d1, e1, iter->index);
     cc_deque_add_at(iter->d2, e2, iter->index);
