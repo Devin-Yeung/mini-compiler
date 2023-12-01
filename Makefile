@@ -38,7 +38,7 @@ test: dfa_test lexer_test symbol_table_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
 
 main: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o
-	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o
+	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o
 
 build:
 	mkdir build
