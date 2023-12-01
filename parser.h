@@ -89,15 +89,15 @@ typedef enum SLRSymbolTy {
 } SLRSymbolTy;
 
 typedef struct SLRItem {
-    SLRSymbol symbol;
-    SLRSymbolTy ty;
+    SLRSymbol *symbol;  // Non-terminal or Token
+    SLRSymbolTy ty;     // the type of the symbol
     unsigned value;
 } SLRItem;
 
 typedef struct SLRParser {
     // TODO: /* stack of SLR items */
     const SLRTable *table;
-    Grammar **grammar;
+    Grammar *grammar;
     CC_Deque *stack;
 } SLRParser;
 
@@ -108,5 +108,8 @@ const struct SLRTable SLR_TABLE = {
     GOTO_TABLE,
     SHIFT_REDUCE_TABLE,
 };
+
+SLRItem *slr_item_init(SLRSymbol symbol, SLRSymbolTy ty, unsigned value);
+SLRParser *slr_parser_init(Grammar *grammar, SLRTable *table);
 
 #endif  // MINI_COMPILER_PARSER_H
