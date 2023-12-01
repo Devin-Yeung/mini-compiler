@@ -6,9 +6,57 @@
 #include "deque.h"
 #include "lexer.h"
 
+typedef enum TermTy {
+    TERM_NON_TERMINAL,
+    TERM_TERMINAL,
+} TermTy;
+
+typedef struct Term {
+    union {
+        char nt;   /* Non-Terminal */
+        TokenTy t; /* Terminal */
+    } value;
+    TermTy ty;
+} Term;
+
+typedef struct Production {
+    unsigned n_rhs; /* number of rhs terms */
+    Term lhs;
+    Term rhs[];
+} Production;
+
+#define MAX_PRODUCTIONS 20
+
 typedef struct Grammar {
-    // TODO
+    unsigned n_prods;
+    Production prods[MAX_PRODUCTIONS];
 } Grammar;
+
+// S' -> S
+const Production P0 = {.n_rhs = 1,
+                       .lhs = {.value = {'S'}, .ty = TERM_NON_TERMINAL},
+                       .rhs = {
+                           {.value = {'S'}, .ty = TERM_NON_TERMINAL},
+                       }};
+
+// S -> F ; S
+const Production P1 = {.n_rhs = 3,
+                       .lhs = {.value = {'S'}, .ty = TERM_NON_TERMINAL},
+                       .rhs = {
+                           {.value = {'F'}, .ty = TERM_NON_TERMINAL},
+                           {.value = {Semicolon}, .ty = TERM_TERMINAL},
+                           {.value = {'S'}, .ty = TERM_NON_TERMINAL},
+                       }};
+
+Grammar GRAMMAR = {
+    .n_prods = MAX_PRODUCTIONS,
+};
+
+Grammar *grammar_init() {
+    GRAMMAR.prods[0] = P0;
+    GRAMMAR.prods[1] = P1;
+    return &GRAMMAR;
+}
 
 typedef enum SLRopTy {
     SLR_SHIFT,
