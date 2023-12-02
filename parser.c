@@ -50,3 +50,15 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
 
     return parser;
 }
+
+void destroy_slr_item(SLRItem *item) {
+    free(item->symbol);
+    free(item);
+}
+
+void destroy_slr_item_cb(void *item) { destroy_slr_item((SLRItem *)item); }
+
+void destroy_slr_parser(SLRParser *parser) {
+    cc_deque_destroy_cb(parser->stack, destroy_slr_item_cb);
+    free(parser);
+}

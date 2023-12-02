@@ -247,5 +247,6 @@ static const struct SLRTable SLR_TABLE = {
 SLRItem *slr_item_init(SLRSymbol symbol, SLRSymbolTy ty, unsigned value);
 
 SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table);
+void destroy_slr_parser(SLRParser *parser);
 
 #endif  // MINI_COMPILER_PARSER_H
