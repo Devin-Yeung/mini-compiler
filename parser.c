@@ -81,20 +81,24 @@ void destroy_slr_parser(SLRParser *parser) {
 }
 
 ParserState slr_parser_step(SLRParser *parser, Token *tok) {
+    printf("Step(%s)\n", tok->lexeme);
     SLRItem *last = NULL;
     cc_deque_get_last(parser->stack, (void *)&last);
     SLRop next = shift_reduce_table_get(parser->table->shift_reduce_table,
                                         last->value, tok->ty);
     if (next.ty == SLR_SHIFT) {
-        SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, tok->ty);
+        printf("(Shift, %d)\n", next.value);
+        SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, next.value);
         cc_deque_add_last(parser->stack, (void *)item);
     } else if (next.ty == SLR_REDUCE) {
+        printf("(Reduce, %d)\n", next.value);
         if (next.value == 0) {
+            printf("Accept!\n");
             return PARSER_ACCEPT;
         }
         Production prod = parser->grammar->prods[next.value];
         // Consume all the rhs item
-        for (unsigned i = prod.n_rhs; i > 0; i--) {
+        for (int i = (int)(prod.n_rhs - 1); i >= 0; i--) {
             if (cc_deque_remove_last(parser->stack, (void *)&last) == CC_OK) {
                 // check if production rule is matched
                 if (last->ty == SLR_SYMBOL_TOKEN) {
@@ -126,8 +130,12 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                                   prod.lhs.value.nt);
         SLRItem *item =
             slr_item_nt(prod.lhs.value.nt, SLR_SYMBOL_NON_TERMINAL, op.value);
+        printf("(GOTO, %d)\n", op.value);
         cc_deque_add_last(parser->stack, (void *)item);
+        // deal with the incoming tok
+        slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
+        printf("Reject due to the empty cell\n");
         return PARSER_REJECT;
     }
     return PARSER_IDLE;
@@ -189,6 +197,7 @@ SLRop shift_reduce_table_get(const SLRop (*shift_reduce_table)[16],
         default:
             __builtin_unreachable();
     }
+    printf("Checking Shift-Reduce Table [%d, %d]\n", state_id, symbol_idx);
     return shift_reduce_table[state_id][symbol_idx];
 }
 
