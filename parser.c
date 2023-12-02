@@ -1,5 +1,9 @@
 #include "parser.h"
 
+#include <stdio.h>
+
+#include "deque.h"
+
 Grammar *grammar_new() {
     Grammar *g = malloc(sizeof(Grammar));
 
@@ -46,7 +50,8 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
     parser->grammar = grammar;
     parser->table = table;
     cc_deque_new(&parser->stack);
-    cc_deque_add(parser->stack, slr_item_token(NULL, SLR_SYMBOL_VOID, 0));
+    SLRItem *item = slr_item_token(NULL, SLR_SYMBOL_VOID, 0);
+    cc_deque_add(parser->stack, item);
 
     return parser;
 }
@@ -61,4 +66,11 @@ void destroy_slr_item_cb(void *item) { destroy_slr_item((SLRItem *)item); }
 void destroy_slr_parser(SLRParser *parser) {
     cc_deque_destroy_cb(parser->stack, destroy_slr_item_cb);
     free(parser);
+}
+
+void slr_parser_step(SLRParser *parser, Token *tok) {
+    SLRItem *last = NULL;
+    cc_deque_get_last(parser->stack, (void *)&last);
+    SLRop next = parser->table->shift_reduce_table[last->value][tok->ty];
+    // TODO: need slr table
 }

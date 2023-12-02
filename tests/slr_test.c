@@ -3,6 +3,7 @@
 int main() {
     Grammar* grammar = grammar_new();
     SLRParser* parser = slr_parser_init(grammar, &SLR_TABLE);
+    slr_parser_step(parser, NULL);
     destroy_slr_parser(parser);
     destroy_grammar(grammar);
 }
