@@ -47,8 +47,7 @@ impl From<*mut gen::Span> for Span {
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum TokenTy {
-    BoolLit,      /* Boolean Literal */
-    NatLit,       /* Natural Number Literal */
+    Literal,      /* Literal */
     BoolDecl,     /* The variable type Boolean */
     NatDecl,      /* The variable type Natural */
     FuncDecl,     /* The variable type Function */
@@ -71,8 +70,7 @@ pub enum TokenTy {
 impl From<gen::TokenTy> for TokenTy {
     fn from(value: gen::TokenTy) -> Self {
         match value {
-            gen::TokenTy_BoolLit => TokenTy::BoolLit,
-            gen::TokenTy_NatLit => TokenTy::NatLit,
+            gen::TokenTy_Literal => TokenTy::Literal,
             gen::TokenTy_BoolDecl => TokenTy::BoolDecl,
             gen::TokenTy_NatDecl => TokenTy::NatDecl,
             gen::TokenTy_FuncDecl => TokenTy::FuncDecl,

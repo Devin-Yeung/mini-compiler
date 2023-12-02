@@ -29,7 +29,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 10,
             end: 10,
@@ -85,7 +85,7 @@ expression: token
     },
     Token {
         lexeme: "T",
-        ty: BoolLit,
+        ty: Literal,
         span: Span {
             start: 29,
             end: 29,
@@ -117,7 +117,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 37,
             end: 37,
@@ -133,7 +133,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 41,
             end: 41,
@@ -189,7 +189,7 @@ expression: token
     },
     Token {
         lexeme: "T",
-        ty: BoolLit,
+        ty: Literal,
         span: Span {
             start: 61,
             end: 61,
@@ -221,7 +221,7 @@ expression: token
     },
     Token {
         lexeme: "F",
-        ty: BoolLit,
+        ty: Literal,
         span: Span {
             start: 69,
             end: 69,
@@ -237,7 +237,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 73,
             end: 73,
@@ -253,7 +253,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 76,
             end: 76,
@@ -277,7 +277,7 @@ expression: token
     },
     Token {
         lexeme: "2",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 83,
             end: 83,
@@ -293,7 +293,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 87,
             end: 87,
