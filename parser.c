@@ -94,6 +94,7 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         printf("(Reduce, %d)\n", next.value);
         if (next.value == 0) {
             printf("Accept!\n");
+            destroy_token(tok);
             return PARSER_ACCEPT;
         }
         Production prod = parser->grammar->prods[next.value];
