@@ -181,7 +181,7 @@ SLRop shift_reduce_table_get(const SLRop (*shift_reduce_table)[16],
         case RightParen:
             symbol_idx = 9;
             break;
-        case NatLit:
+        case Literal:
             symbol_idx = 10;
             break;
         case Plus:
