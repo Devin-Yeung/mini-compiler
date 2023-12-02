@@ -23,7 +23,8 @@ typedef struct Term {
 typedef struct Production {
     unsigned n_rhs; /* number of rhs terms */
     Term lhs;
-    Term rhs[];
+    Term
+        rhs[10]; /* Seems related to the mem layout, let's set max size to 10 */
 } Production;
 
 typedef struct Grammar {
