@@ -254,5 +254,7 @@ void slr_parser_step(SLRParser *parser, Token *tok);
 
 SLRop goto_table_get(const SLRop (*goto_table)[9], unsigned state_id,
                      NonTerminal nt);
+SLRop shift_reduce_table_get(const SLRop (*shift_reduce_table)[16],
+                             unsigned state_id, TokenTy ty);
 
 #endif  // MINI_COMPILER_PARSER_H
