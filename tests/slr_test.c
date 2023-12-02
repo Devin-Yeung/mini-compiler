@@ -19,6 +19,7 @@ void smoke_test() {
     assert(state = PARSER_ACCEPT);
     destroy_slr_parser(parser);
     destroy_grammar(grammar);
+    destroy_lexer(lexer);
 }
 
 void api_test() {
