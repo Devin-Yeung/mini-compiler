@@ -145,7 +145,7 @@ static const Production P12 = {.n_rhs = 1,
 static const Production P13 = {.n_rhs = 3,
                                .lhs = {.value = {'E'}, .ty = TERM_NON_TERMINAL},
                                .rhs = {
-                                   {.value = {NatLit}, .ty = TERM_TERMINAL},
+                                   {.value = {Literal}, .ty = TERM_TERMINAL},
                                    {.value = {Plus}, .ty = TERM_TERMINAL},
                                    {.value = {'E'}, .ty = TERM_NON_TERMINAL},
                                }};
@@ -154,7 +154,7 @@ static const Production P13 = {.n_rhs = 3,
 static const Production P14 = {.n_rhs = 1,
                                .lhs = {.value = {'E'}, .ty = TERM_NON_TERMINAL},
                                .rhs = {
-                                   {.value = {NatLit}, .ty = TERM_TERMINAL},
+                                   {.value = {Literal}, .ty = TERM_TERMINAL},
                                }};
 
 // B -> E R E & B

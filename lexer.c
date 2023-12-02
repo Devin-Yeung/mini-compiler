@@ -62,11 +62,8 @@ Token *eof_token() {
 
 int debug_token(Token *token, char *buf, size_t bufsz) {
     switch (token->ty) {
-        case BoolLit: /* Boolean Literal */
-            return snprintf(buf, bufsz, "BoolLit(%s)", token->lexeme);
-
-        case NatLit: /* Natural Number Literal */
-            return snprintf(buf, bufsz, "NatLit(%s)", token->lexeme);
+        case Literal: /* Boolean Literal */
+            return snprintf(buf, bufsz, "Literal(%s)", token->lexeme);
 
         case BoolDecl: /* The variable type Boolean */
             return snprintf(buf, bufsz, "BoolDecl");
@@ -166,7 +163,7 @@ TokenTy get_token_type(char *lexeme) {
     }
 
     if (strcmp(lexeme, "T") == 0 || strcmp(lexeme, "F") == 0) {
-        return BoolLit;
+        return Literal;
     }
 
     if (strcmp(lexeme, "bool") == 0) {
@@ -178,7 +175,7 @@ TokenTy get_token_type(char *lexeme) {
     }
 
     if (isdigit(lexeme[0])) {
-        return NatLit;
+        return Literal;
     } else {
         return Identifier;
     }

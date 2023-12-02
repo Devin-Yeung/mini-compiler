@@ -13,8 +13,7 @@ Span *span_new(unsigned start, unsigned end);
 void destroy_span(Span *span);
 
 typedef enum TokenTy {
-    BoolLit,      /* Boolean Literal */
-    NatLit,       /* Natural Number Literal */
+    Literal,      /* Boolean or Natural Literal */
     BoolDecl,     /* The variable type Boolean */
     NatDecl,      /* The variable type Natural */
     FuncDecl,     /* The variable type Function */
