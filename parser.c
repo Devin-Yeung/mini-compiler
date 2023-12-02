@@ -1,6 +1,6 @@
 #include "parser.h"
 
-Grammar *grammar_init() {
+Grammar *grammar_new() {
     Grammar *g = malloc(sizeof(Grammar));
 
     g->prods[0] = P0;
@@ -25,6 +25,8 @@ Grammar *grammar_init() {
 
     return g;
 }
+
+void destroy_grammar(Grammar *g) { free(g); }
 
 SLRItem *slr_item_token(Token *tok, SLRSymbolTy ty, unsigned value) {
     SLRItem *item = malloc(sizeof(SLRItem));
