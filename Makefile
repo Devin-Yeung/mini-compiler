@@ -1,5 +1,5 @@
 CC            ?= clang
-CFLAGS        := -Wall -Wextra
+CFLAGS        := $(CFLAGS) -Wall -Wextra
 RUNTIME_FLAGS :=
 
 SANITIZER ?= 0
