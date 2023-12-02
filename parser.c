@@ -44,6 +44,18 @@ SLRItem *slr_item_token(Token *tok, SLRSymbolTy ty, unsigned value) {
     return item;
 }
 
+SLRItem *slr_item_nt(NonTerminal nt, SLRSymbolTy ty, unsigned value) {
+    SLRItem *item = malloc(sizeof(SLRItem));
+
+    SLRSymbol *sym = malloc(sizeof(SLRSymbol));
+    sym->nt = nt;
+
+    item->symbol = sym;
+    item->ty = ty;
+    item->value = value;
+    return item;
+}
+
 SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
     SLRParser *parser = malloc(sizeof(SLRParser));
 
@@ -68,11 +80,57 @@ void destroy_slr_parser(SLRParser *parser) {
     free(parser);
 }
 
-void slr_parser_step(SLRParser *parser, Token *tok) {
+ParserState slr_parser_step(SLRParser *parser, Token *tok) {
     SLRItem *last = NULL;
     cc_deque_get_last(parser->stack, (void *)&last);
-    SLRop next = parser->table->shift_reduce_table[last->value][tok->ty];
-    // TODO: need slr table
+    SLRop next = shift_reduce_table_get(parser->table->shift_reduce_table,
+                                        last->value, tok->ty);
+    if (next.ty == SLR_SHIFT) {
+        SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, tok->ty);
+        cc_deque_add_last(parser->stack, (void *)item);
+    } else if (next.ty == SLR_REDUCE) {
+        if (next.value == 0) {
+            return PARSER_ACCEPT;
+        }
+        Production prod = parser->grammar->prods[next.value];
+        // Consume all the rhs item
+        for (unsigned i = prod.n_rhs; i > 0; i--) {
+            if (cc_deque_remove_last(parser->stack, (void *)&last) == CC_OK) {
+                // check if production rule is matched
+                if (last->ty == SLR_SYMBOL_TOKEN) {
+                    if (prod.rhs[i].ty == TERM_TERMINAL &&
+                        prod.rhs[i].value.t == last->symbol->token->ty) {
+                        continue;
+                    } else {
+                        return PARSER_REJECT;
+                    }
+                }
+
+                if (last->ty == SLR_SYMBOL_NON_TERMINAL) {
+                    if (prod.rhs[i].ty == TERM_NON_TERMINAL &&
+                        prod.rhs[i].value.nt == last->symbol->nt) {
+                        continue;
+                    } else {
+                        return PARSER_REJECT;
+                    }
+                }
+                // TODO: reserve for building parse tree
+            } else {
+                // Do not have enough item to reduce a production rule
+                return PARSER_REJECT;
+            }
+        }
+        // Push the lhs item to the stack
+        cc_deque_get_last(parser->stack, (void *)&last);
+        SLRop op = goto_table_get(parser->table->goto_table, last->value,
+                                  prod.lhs.value.nt);
+        SLRItem *item =
+            slr_item_nt(prod.lhs.value.nt, SLR_SYMBOL_NON_TERMINAL, op.value);
+        cc_deque_add_last(parser->stack, (void *)item);
+    } else /* Empty Cell, Reject */ {
+        return PARSER_REJECT;
+    }
+    return PARSER_IDLE;
 }
 
 SLRop shift_reduce_table_get(const SLRop (*shift_reduce_table)[16],
