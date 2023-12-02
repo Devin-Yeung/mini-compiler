@@ -1,0 +1,37 @@
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+name: Fuzz
+jobs:
+  parser-fuzz:
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} / clang / test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "15.0"
+      - name: Install bnfgen
+        run: |
+          wget https://github.com/dmbaturin/bnfgen/releases/download/3.0.0/bnfgen-3.0.0-linux-x86_64.tar.gz
+          tar -xvf bnfgen-3.0.0-linux-x86_64.tar.gz
+          sudo mv bnfgen-3.0.0-linux-x86_64/bnfgen /usr/bin
+      - name: Run the fuzz
+        run: for i in {1..100}; make run_parser_fuzz; done
+        env:
+          CFLAGS: -O3
+
