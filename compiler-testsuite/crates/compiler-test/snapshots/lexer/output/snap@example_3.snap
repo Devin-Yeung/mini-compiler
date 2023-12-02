@@ -93,7 +93,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 35,
             end: 35,
@@ -141,7 +141,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 47,
             end: 47,
@@ -157,7 +157,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 52,
             end: 52,
@@ -277,7 +277,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 83,
             end: 83,
@@ -301,7 +301,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 87,
             end: 87,
@@ -365,7 +365,7 @@ expression: token
     },
     Token {
         lexeme: "T",
-        ty: BoolLit,
+        ty: Literal,
         span: Span {
             start: 110,
             end: 110,
@@ -405,7 +405,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 122,
             end: 122,
@@ -413,7 +413,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 124,
             end: 124,
@@ -437,7 +437,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 129,
             end: 129,
@@ -453,7 +453,7 @@ expression: token
     },
     Token {
         lexeme: "T",
-        ty: BoolLit,
+        ty: Literal,
         span: Span {
             start: 132,
             end: 132,
@@ -485,7 +485,7 @@ expression: token
     },
     Token {
         lexeme: "2",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 142,
             end: 142,
@@ -509,7 +509,7 @@ expression: token
     },
     Token {
         lexeme: "0",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 147,
             end: 147,

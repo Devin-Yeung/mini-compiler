@@ -21,7 +21,7 @@ expression: token
     },
     Token {
         lexeme: "2",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 9,
             end: 9,
@@ -37,7 +37,7 @@ expression: token
     },
     Token {
         lexeme: "1",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 14,
             end: 14,
@@ -53,7 +53,7 @@ expression: token
     },
     Token {
         lexeme: "4",
-        ty: NatLit,
+        ty: Literal,
         span: Span {
             start: 27,
             end: 27,
