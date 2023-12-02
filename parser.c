@@ -104,6 +104,9 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                 if (last->ty == SLR_SYMBOL_TOKEN) {
                     if (prod.rhs[i].ty == TERM_TERMINAL &&
                         prod.rhs[i].value.t == last->symbol->token->ty) {
+                        // TODO: Remove this line if the ownership is
+                        // TODO: transferred to the parse tree
+                        destroy_token(last->symbol->token);
                         continue;
                     } else {
                         return PARSER_REJECT;
@@ -119,6 +122,7 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                     }
                 }
                 // TODO: reserve for building parse tree
+                destroy_slr_item(last);
             } else {
                 // Do not have enough item to reduce a production rule
                 return PARSER_REJECT;
