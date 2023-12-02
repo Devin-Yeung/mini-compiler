@@ -107,8 +107,8 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                         // TODO: Remove this line if the ownership is
                         // TODO: transferred to the parse tree
                         destroy_token(last->symbol->token);
-                        continue;
                     } else {
+                        destroy_slr_item(last);
                         return PARSER_REJECT;
                     }
                 }
@@ -116,8 +116,8 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                 if (last->ty == SLR_SYMBOL_NON_TERMINAL) {
                     if (prod.rhs[i].ty == TERM_NON_TERMINAL &&
                         prod.rhs[i].value.nt == last->symbol->nt) {
-                        continue;
                     } else {
+                        destroy_slr_item(last);
                         return PARSER_REJECT;
                     }
                 }
