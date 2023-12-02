@@ -190,7 +190,8 @@ static const Production P18 = {.n_rhs = 1,
                                    {.value = {Equal}, .ty = TERM_TERMINAL},
                                }};
 
-Grammar *grammar_init();
+Grammar *grammar_new();
+void destroy_grammar(Grammar *g);
 
 typedef enum SLRopTy {
     SLR_SHIFT,
