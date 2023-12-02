@@ -74,3 +74,41 @@ void slr_parser_step(SLRParser *parser, Token *tok) {
     SLRop next = parser->table->shift_reduce_table[last->value][tok->ty];
     // TODO: need slr table
 }
+
+SLRop goto_table_get(const SLRop (*goto_table)[9], unsigned state_id,
+                     NonTerminal nt) {
+    // mapping a non-terminal to table column index
+    unsigned symbol_idx = 0;
+    switch (nt) {
+        case 'S':
+            symbol_idx = 0;
+            break;
+        case 'F':
+            symbol_idx = 1;
+            break;
+        case 'A':
+            symbol_idx = 2;
+            break;
+        case 'T':
+            symbol_idx = 3;
+            break;
+        case 'C':
+            symbol_idx = 4;
+            break;
+        case 'E':
+            symbol_idx = 5;
+            break;
+        case 'I':
+            symbol_idx = 6;
+            break;
+        case 'B':
+            symbol_idx = 7;
+            break;
+        case 'R':
+            symbol_idx = 8;
+            break;
+        default:
+            __builtin_unreachable();
+    }
+    return goto_table[state_id][symbol_idx];
+}

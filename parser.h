@@ -252,4 +252,7 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table);
 void destroy_slr_parser(SLRParser *parser);
 void slr_parser_step(SLRParser *parser, Token *tok);
 
+SLRop goto_table_get(const SLRop (*goto_table)[9], unsigned state_id,
+                     NonTerminal nt);
+
 #endif  // MINI_COMPILER_PARSER_H
