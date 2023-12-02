@@ -12,7 +12,7 @@ name: Fuzz
 jobs:
   parser-fuzz:
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} / clang / test
+    name: ${{ matrix.os }} / clang / parser-fuzz
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +31,7 @@ jobs:
           tar -xvf bnfgen-3.0.0-linux-x86_64.tar.gz
           sudo mv bnfgen-3.0.0-linux-x86_64/bnfgen /usr/bin
       - name: Run the fuzz
-        run: for i in {1..100}; make run_parser_fuzz; done
+        run: for i in {1..100}; do make run_parser_fuzz; done
         env:
           CFLAGS: -O3
 
