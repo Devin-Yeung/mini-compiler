@@ -31,7 +31,7 @@ else
 endif
 
 
-all: test main
+all: test main parser_fuzz
 
 test: dfa_test lexer_test symbol_table_test slr_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
@@ -58,6 +58,12 @@ slr_test: build build/slr_test.o build/lexer.o build/log.o build/deque.o build/p
 	$(CC) $(CFLAGS) -o build/slr_test build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o
 	$(RUNTIME_FLAGS) ./build/slr_test
 
+build/parser_fuzz: build build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o
+	$(CC) $(CFLAGS) -o build/parser_fuzz build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o
+
+run_parser_fuzz: build/parser_fuzz
+	bnfgen table/grammar.bnf | build/parser_fuzz
+
 build/log.o:
 	$(CC) $(CFLAGS) -c log.c -o build/log.o
 
@@ -69,6 +75,9 @@ build/dfa_test.o: build tests/dfa_test.c
 
 build/symbol_table_test.o: build tests/symbol_table_test.c
 	$(CC) $(CFLAGS) -c tests/symbol_table_test.c -o build/symbol_table_test.o
+
+build/parser_fuzz.o: build fuzz/parser_fuzz.c
+	$(CC) $(CFLAGS) -c fuzz/parser_fuzz.c -o build/parser_fuzz.o
 
 lexer: build/lexer.o build/func.o
 	$(CC) $(CFLAGS) -o build/lexer build/lexer.o build/func.o
@@ -95,6 +104,7 @@ format:
 	clang-format -i *.c
 	clang-format -i *.h
 	clang-format -i tests/*.c
+	clang-format -i fuzz/*.c
 
 codecov: build main test
 	./build/dfa_test
