@@ -30,6 +30,8 @@ jobs:
           wget https://github.com/dmbaturin/bnfgen/releases/download/3.0.0/bnfgen-3.0.0-linux-x86_64.tar.gz
           tar -xvf bnfgen-3.0.0-linux-x86_64.tar.gz
           sudo mv bnfgen-3.0.0-linux-x86_64/bnfgen /usr/bin
+      - name: Clean up printf
+        run: sed -i '/\bprintf\b/ { N; s/\bprintf\b[^(]*([^)]*)[^;]*;// }' *.c
       - name: Run the fuzz
         run: for i in {1..100}; do make run_parser_fuzz; done
         env:
