@@ -31,7 +31,7 @@ else
 endif
 
 
-all: test main parser_fuzz
+all: test main run_parser_fuzz
 
 test: dfa_test lexer_test symbol_table_test slr_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
