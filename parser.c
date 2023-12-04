@@ -102,16 +102,14 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                                         last->value, tok->ty);
     if (next.ty == SLR_SHIFT) {
         log_debug("(Shift, %d)", next.value);
-        buf = stringify_slr_stack(parser);
-        printf("<%s\n", buf);
-        free(buf);
         SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, next.value);
         cc_deque_add_last(parser->stack, (void *)item);
-    } else if (next.ty == SLR_REDUCE) {
-        log_debug("(Reduce, %d)", next.value);
+        // Display the SLR Stack
         buf = stringify_slr_stack(parser);
         printf("<%s\n", buf);
         free(buf);
+    } else if (next.ty == SLR_REDUCE) {
+        log_debug("(Reduce, %d)", next.value);
         if (next.value == 0) {
             log_debug("Accept!");
             destroy_token(tok);
@@ -149,6 +147,10 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                 return PARSER_REJECT;
             }
         }
+        // Display the SLR Stack
+        buf = stringify_slr_stack(parser);
+        printf("<%s\n", buf);
+        free(buf);
         // Push the lhs item to the stack
         cc_deque_get_last(parser->stack, (void *)&last);
         SLRop op = goto_table_get(parser->table->goto_table, last->value,
