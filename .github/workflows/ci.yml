@@ -77,7 +77,6 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "15.0"
-          env: true
       - name: Get Codecov Report
         run: make codecov
         env:
