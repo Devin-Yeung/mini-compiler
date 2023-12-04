@@ -118,10 +118,12 @@ int debug_token(Token *token, char *buf, size_t bufsz) {
     }
 }
 
-Span *span_new(unsigned start, unsigned end) {
+Span *span_new(unsigned start, unsigned end, unsigned line, unsigned column) {
     Span *span = (Span *)malloc(sizeof(Span));
     span->start = start;
     span->end = end;
+    span->line = line;
+    span->column = column;
     return span;
 }
 
@@ -249,6 +251,8 @@ Lexer *lexer_new(const char *src) {
     lexer->end = 0;
     lexer->src = src;
     lexer->len = strlen(src);
+    lexer->line = 1;
+    lexer->column = 1;
 
     return lexer;
 }
@@ -286,6 +290,15 @@ Token *lexer_next_token(Lexer *lexer) {
         // Don't skip whitespace in comment section
         if (state != LEXER_STATE_COMMENT &&
             (isspace(lexer->src[cursor]) || lexer->src[cursor] == '\0')) {
+            // Bump the lineno
+            if (lexer->src[cursor] == '\n') {
+                lexer->line += 1;
+                lexer->column = 1;
+                log_debug("Column Reset to 1");
+            } else {
+                lexer->column += 1;
+                log_debug("Column Bumped");
+            }
             log_debug("Whitespace detected at %u, Skip", cursor);
             cursor += 1;
             // reset span
@@ -307,7 +320,9 @@ Token *lexer_next_token(Lexer *lexer) {
                 token->lexeme =
                     strncpy(lexeme, lexer->src + lexer->start, token_len);
                 token->lexeme[token_len] = '\0';
-                token->span = span_new(lexer->start, lexer->end);
+                token->span =
+                    span_new(lexer->start, lexer->end, lexer->line,
+                             lexer->column - (lexer->end - lexer->start));
 
                 if (dfa_is_accept(lexer->dfa)) {
                     token->ty = get_token_type(token->lexeme);
@@ -320,9 +335,13 @@ Token *lexer_next_token(Lexer *lexer) {
                 dfa_reset(lexer->dfa);
                 lexer->start = lexer->end + 1;
                 lexer->end = lexer->start;
+                lexer->column += 1;
+                log_debug("Column Bumped");
                 return token;
             } else {
                 lexer->end += 1;
+                lexer->column += 1;
+                log_debug("Column Bumped");
             }
 
             cursor += 1;

@@ -7,9 +7,11 @@
 typedef struct Span {
     unsigned start;
     unsigned end;
+    unsigned line;
+    unsigned column;
 } Span;
 
-Span *span_new(unsigned start, unsigned end);
+Span *span_new(unsigned start, unsigned end, unsigned line, unsigned column);
 void destroy_span(Span *span);
 
 typedef enum TokenTy {
@@ -68,6 +70,8 @@ typedef struct Lexer {
     unsigned end;   /* end position of the current lexeme */
     const char *src;
     unsigned len; /* len of the source code, null byte EXCLUDED */
+    unsigned line;
+    unsigned column;
 } Lexer;
 
 Lexer *lexer_new(const char *src);
