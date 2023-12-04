@@ -25,6 +25,7 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "15.0"
+          env: true
       - name: Install bnfgen
         run: |
           wget https://github.com/dmbaturin/bnfgen/releases/download/3.0.0/bnfgen-3.0.0-linux-x86_64.tar.gz
