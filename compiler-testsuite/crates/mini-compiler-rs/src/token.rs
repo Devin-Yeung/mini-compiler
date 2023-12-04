@@ -29,17 +29,26 @@ impl From<*mut gen::Token> for Token {
 pub struct Span {
     pub start: usize,
     pub end: usize,
+    pub line: usize,
+    pub column: usize,
 }
 
 impl From<*mut gen::Span> for Span {
     fn from(value: *mut gen::Span) -> Self {
         if value.is_null() {
-            return Span { start: 0, end: 0 };
+            return Span {
+                start: 0,
+                end: 0,
+                line: 0,
+                column: 0,
+            };
         }
         let inner = unsafe { *value };
         let span = Span {
             start: inner.start as usize,
             end: inner.end as usize,
+            line: inner.line as usize,
+            column: inner.column as usize,
         };
         span
     }
