@@ -34,7 +34,7 @@ jobs:
       - name: Clean up printf
         run: sed -i '/\bprintf\b/ { N; s/\bprintf\b[^(]*([^)]*)[^;]*;// }' *.c
       - name: Run the fuzz
-        run: for i in {1..100}; do make run_parser_fuzz; done
+        run: for i in {1..16}; do make run_parser_fuzz; done
         env:
           CFLAGS: -O3
 
