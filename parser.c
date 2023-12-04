@@ -1,5 +1,6 @@
 #include "parser.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 
 #include "deque.h"
@@ -242,4 +243,150 @@ SLRop goto_table_get(const SLRop (*goto_table)[9], unsigned state_id,
             __builtin_unreachable();
     }
     return goto_table[state_id][symbol_idx];
+}
+
+StringBuilder *string_builder_init() {
+    StringBuilder *sb = malloc(sizeof(StringBuilder));
+    sb->str = malloc(sizeof(char) * (16 + 1));
+    sb->capacity = 16;
+    sb->length = 0;
+    return sb;
+}
+
+void string_builder_append(StringBuilder *sb, const char *text) {
+    size_t text_length = strlen(text);
+    size_t new_length =
+        sb->length + text_length + 1;  // +1 for the null terminator
+    if (new_length > sb->capacity) {
+        // Resize the buffer
+        sb->capacity = new_length * 2;  // Double the capacity
+        sb->str = (char *)realloc(
+            sb->str,
+            sb->capacity * sizeof(char));  // FIXME: deal with the NULL case
+    }
+    // Append the text to the end of the current string
+    strcpy(sb->str + sb->length, text);
+    sb->length = new_length - 1;
+}
+
+void string_builder_append_fmt(StringBuilder *sb, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    // Determine the length of the formatted string
+    size_t formattedLength = vsnprintf(NULL, 0, format, args);
+    va_end(args);
+
+    size_t new_length =
+        sb->length + formattedLength + 1;  // +1 for the null terminator
+
+    if (new_length > sb->capacity) {
+        // Resize the buffer
+        sb->capacity = new_length * 2;  // Double the capacity
+        sb->str = (char *)realloc(sb->str, sb->capacity * sizeof(char));
+    }
+
+    va_start(args, format);
+
+    // Append the formatted string to the end of the current string
+    vsprintf(sb->str + sb->length, format, args);
+
+    va_end(args);
+
+    // Update the length
+    sb->length = new_length - 1;
+}
+
+char *string_builder_build(StringBuilder *sb) {
+    char *str = sb->str;
+    free(sb);
+    return str;
+}
+
+SLRTrace *slr_trace_init() { return NULL; }
+
+char *stringify_slr_stack(SLRParser *parser) {
+    StringBuilder *sb = string_builder_init();
+    CC_DequeIter iter;
+    cc_deque_iter_init(&iter, parser->stack);
+    SLRItem *el;
+    cc_deque_iter_next(&iter, (void *)&el);
+    stringify_slr_item(el, sb);
+    while (cc_deque_iter_next(&iter, (void *)&el) != CC_ITER_END) {
+        string_builder_append(sb, ", ");
+        stringify_slr_item(el, sb);
+    }
+    return string_builder_build(sb);
+}
+
+void stringify_slr_item(SLRItem *item, StringBuilder *sb) {
+    string_builder_append(sb, "(");
+    if (item->ty == SLR_SYMBOL_TOKEN) {
+        char *symbol;
+        switch (item->symbol->token->ty) {
+            case Literal:
+                symbol = "lit";
+                break;
+            case BoolDecl:
+                symbol = "bool";
+                break;
+            case NatDecl:
+                symbol = "nat";
+                break;
+            case FuncDecl:
+                symbol = "fun";
+                break;
+            case QuestionMark:
+                symbol = "?";
+                break;
+            case Colon:
+                symbol = ":";
+                break;
+            case Semicolon:
+                symbol = ";";
+                break;
+            case LeftParen:
+                symbol = "(";
+                break;
+            case RightParen:
+                symbol = ")";
+                break;
+            case Plus:
+                symbol = "+";
+                break;
+            case Ampersand:
+                symbol = "&";
+                break;
+            case Arrow:
+                symbol = "->";
+                break;
+            case Less:
+                symbol = "<";
+                break;
+            case Equal:
+                symbol = "=";
+                break;
+            case Comment:
+                __builtin_unreachable();
+                break;
+            case Identifier:
+                symbol = "id";
+                break;
+            case Eof:
+                symbol = "$";
+                break;
+            case Invalid:
+                __builtin_unreachable();
+                break;
+        }
+        string_builder_append(sb, symbol);
+    } else if (item->ty == SLR_SYMBOL_NON_TERMINAL) {
+        string_builder_append_fmt(sb, "%c", item->symbol->nt);
+    } else {
+        string_builder_append(sb, "0)");
+        return;
+    }
+    string_builder_append(sb, ", ");
+    string_builder_append_fmt(sb, "%d", item->value);
+    string_builder_append(sb, ")");
 }
