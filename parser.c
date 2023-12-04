@@ -4,6 +4,17 @@
 #include <stdio.h>
 
 #include "deque.h"
+#ifdef LOG
+#include "log.h"
+#else
+// If log is not enable, just ignore the macro call
+#define log_trace(...)
+#define log_debug(...)
+#define log_info(...)
+#define log_warn(...)
+#define log_error(...)
+#define log_fatal(...)
+#endif
 
 Grammar *grammar_new() {
     Grammar *g = malloc(sizeof(Grammar));
@@ -82,19 +93,19 @@ void destroy_slr_parser(SLRParser *parser) {
 }
 
 ParserState slr_parser_step(SLRParser *parser, Token *tok) {
-    printf("Step(%s)\n", tok->lexeme);
+    log_debug("Step(%s)", tok->lexeme);
     SLRItem *last = NULL;
     cc_deque_get_last(parser->stack, (void *)&last);
     SLRop next = shift_reduce_table_get(parser->table->shift_reduce_table,
                                         last->value, tok->ty);
     if (next.ty == SLR_SHIFT) {
-        printf("(Shift, %d)\n", next.value);
+        log_debug("(Shift, %d)", next.value);
         SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, next.value);
         cc_deque_add_last(parser->stack, (void *)item);
     } else if (next.ty == SLR_REDUCE) {
-        printf("(Reduce, %d)\n", next.value);
+        log_debug("(Reduce, %d)", next.value);
         if (next.value == 0) {
-            printf("Accept!\n");
+            log_debug("Accept!");
             destroy_token(tok);
             return PARSER_ACCEPT;
         }
@@ -136,12 +147,12 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                                   prod.lhs.value.nt);
         SLRItem *item =
             slr_item_nt(prod.lhs.value.nt, SLR_SYMBOL_NON_TERMINAL, op.value);
-        printf("(GOTO, %d)\n", op.value);
+        log_debug("(GOTO, %d)", op.value);
         cc_deque_add_last(parser->stack, (void *)item);
         // deal with the incoming tok
         slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
-        printf("Reject due to the empty cell\n");
+        log_debug("Reject due to the empty cell");
         return PARSER_REJECT;
     }
     return PARSER_IDLE;
@@ -203,7 +214,7 @@ SLRop shift_reduce_table_get(const SLRop (*shift_reduce_table)[16],
         default:
             __builtin_unreachable();
     }
-    printf("Checking Shift-Reduce Table [%d, %d]\n", state_id, symbol_idx);
+    log_debug("Checking Shift-Reduce Table [%d, %d]", state_id, symbol_idx);
     return shift_reduce_table[state_id][symbol_idx];
 }
 

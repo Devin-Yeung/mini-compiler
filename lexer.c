@@ -53,8 +53,9 @@ bool dfa_matches(DFA *dfa, const char *s) {
 
 Token *eof_token() {
     Token *token = (Token *)malloc(sizeof(Token));
-    token->lexeme = (char *)malloc(sizeof(char));
-    token->lexeme[0] = '\0';
+    token->lexeme = (char *)malloc(sizeof(char) * 2);
+    token->lexeme[0] = '$';
+    token->lexeme[1] = '\0';
     token->span = NULL;
     token->ty = Eof;
     return token;
@@ -111,7 +112,7 @@ int debug_token(Token *token, char *buf, size_t bufsz) {
             return snprintf(buf, bufsz, "Ident(%s)", token->lexeme);
 
         case Eof: /* End of file */
-            return snprintf(buf, bufsz, "EOF\n");
+            return snprintf(buf, bufsz, "EOF");
 
         case Invalid: /* Invalid token */
             return snprintf(buf, bufsz, "Invalid(%s)", token->lexeme);
