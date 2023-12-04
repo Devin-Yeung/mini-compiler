@@ -1,5 +1,6 @@
 #include "parser.h"
 
+#include <assert.h>  // TODO: remove me in release
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -93,6 +94,7 @@ void destroy_slr_parser(SLRParser *parser) {
 }
 
 ParserState slr_parser_step(SLRParser *parser, Token *tok) {
+    char *buf;
     log_debug("Step(%s)", tok->lexeme);
     SLRItem *last = NULL;
     cc_deque_get_last(parser->stack, (void *)&last);
@@ -100,10 +102,16 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                                         last->value, tok->ty);
     if (next.ty == SLR_SHIFT) {
         log_debug("(Shift, %d)", next.value);
+        buf = stringify_slr_stack(parser);
+        printf("<%s\n", buf);
+        free(buf);
         SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, next.value);
         cc_deque_add_last(parser->stack, (void *)item);
     } else if (next.ty == SLR_REDUCE) {
         log_debug("(Reduce, %d)", next.value);
+        buf = stringify_slr_stack(parser);
+        printf("<%s\n", buf);
+        free(buf);
         if (next.value == 0) {
             log_debug("Accept!");
             destroy_token(tok);
@@ -322,6 +330,7 @@ char *stringify_slr_stack(SLRParser *parser) {
     cc_deque_iter_init(&iter, parser->stack);
     SLRItem *el;
     cc_deque_iter_next(&iter, (void *)&el);
+    assert(el != NULL);  // TODO: remove me in release
     stringify_slr_item(el, sb);
     while (cc_deque_iter_next(&iter, (void *)&el) != CC_ITER_END) {
         string_builder_append(sb, ", ");
