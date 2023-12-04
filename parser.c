@@ -326,15 +326,15 @@ SLRTrace *slr_trace_init() { return NULL; }
 
 char *stringify_slr_stack(SLRParser *parser) {
     StringBuilder *sb = string_builder_init();
-    CC_DequeIter iter;
-    cc_deque_iter_init(&iter, parser->stack);
-    SLRItem *el;
-    cc_deque_iter_next(&iter, (void *)&el);
-    assert(el != NULL);  // TODO: remove me in release
-    stringify_slr_item(el, sb);
-    while (cc_deque_iter_next(&iter, (void *)&el) != CC_ITER_END) {
-        string_builder_append(sb, ", ");
+    SLRItem *el = NULL;
+    size_t deque_sz = cc_deque_size(parser->stack);
+    for (size_t i = 0; i < deque_sz; i++) {
+        cc_deque_get_at(parser->stack, i, (void *)&el);
+        assert(el != NULL);
         stringify_slr_item(el, sb);
+        if (i != deque_sz - 1) {
+            string_builder_append(sb, ", ");
+        }
     }
     return string_builder_build(sb);
 }
