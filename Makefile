@@ -24,7 +24,7 @@ ifeq ($(CODECOV),1)
 	CFLAGS := $(CFLAGS) -fprofile-arcs -ftest-coverage
 endif
 
-ifeq ($(CC), clang)
+ifneq (,$(findstring clang,$(CC)))
     GCOV_TOOL = --gcov-tool llvm-cov --gcov-tool gcov
 else
     GCOV_TOOL = --gcov-tool gcov

@@ -76,6 +76,7 @@ jobs:
       - name: Install LLVM and Clang
         uses: KyleMayes/install-llvm-action@v1
         with:
+          env: true
           version: "15.0"
       - name: Get Codecov Report
         run: make codecov
