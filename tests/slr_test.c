@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "../log.h"
 #include "../parser.h"
 
 void smoke_test() {
@@ -13,7 +14,7 @@ void smoke_test() {
         char buf[256];
         Token* tok = lexer_next_token(lexer);
         debug_token(tok, buf, 256);
-        printf("%s\n", buf);
+        log_info("Current Tok => %s", buf);
         state = slr_parser_step(parser, tok);
     } while (state == PARSER_IDLE);
     assert(state = PARSER_ACCEPT);
