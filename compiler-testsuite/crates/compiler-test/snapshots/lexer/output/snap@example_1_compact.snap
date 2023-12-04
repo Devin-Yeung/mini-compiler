@@ -9,6 +9,8 @@ expression: token
         span: Span {
             start: 0,
             end: 2,
+            line: 1,
+            column: 1,
         },
     },
     Token {
@@ -17,6 +19,8 @@ expression: token
         span: Span {
             start: 4,
             end: 6,
+            line: 1,
+            column: 5,
         },
     },
     Token {
@@ -25,6 +29,8 @@ expression: token
         span: Span {
             start: 8,
             end: 10,
+            line: 1,
+            column: 9,
         },
     },
     Token {
@@ -33,6 +39,8 @@ expression: token
         span: Span {
             start: 12,
             end: 12,
+            line: 1,
+            column: 13,
         },
     },
     Token {
@@ -41,6 +49,8 @@ expression: token
         span: Span {
             start: 13,
             end: 14,
+            line: 1,
+            column: 14,
         },
     },
     Token {
@@ -49,6 +59,8 @@ expression: token
         span: Span {
             start: 15,
             end: 15,
+            line: 1,
+            column: 16,
         },
     },
     Token {
@@ -57,6 +69,8 @@ expression: token
         span: Span {
             start: 16,
             end: 16,
+            line: 1,
+            column: 17,
         },
     },
     Token {
@@ -65,6 +79,8 @@ expression: token
         span: Span {
             start: 17,
             end: 17,
+            line: 1,
+            column: 18,
         },
     },
     Token {
@@ -73,6 +89,8 @@ expression: token
         span: Span {
             start: 18,
             end: 18,
+            line: 1,
+            column: 19,
         },
     },
     Token {
@@ -81,6 +99,8 @@ expression: token
         span: Span {
             start: 19,
             end: 19,
+            line: 1,
+            column: 20,
         },
     },
     Token {
@@ -89,6 +109,8 @@ expression: token
         span: Span {
             start: 20,
             end: 20,
+            line: 1,
+            column: 21,
         },
     },
     Token {
@@ -97,6 +119,8 @@ expression: token
         span: Span {
             start: 21,
             end: 21,
+            line: 1,
+            column: 22,
         },
     },
     Token {
@@ -105,6 +129,8 @@ expression: token
         span: Span {
             start: 22,
             end: 22,
+            line: 1,
+            column: 23,
         },
     },
     Token {
@@ -113,6 +139,8 @@ expression: token
         span: Span {
             start: 24,
             end: 24,
+            line: 2,
+            column: 1,
         },
     },
     Token {
@@ -121,6 +149,8 @@ expression: token
         span: Span {
             start: 25,
             end: 25,
+            line: 2,
+            column: 2,
         },
     },
     Token {
@@ -129,6 +159,8 @@ expression: token
         span: Span {
             start: 26,
             end: 26,
+            line: 2,
+            column: 3,
         },
     },
     Token {
@@ -137,6 +169,8 @@ expression: token
         span: Span {
             start: 27,
             end: 29,
+            line: 2,
+            column: 4,
         },
     },
     Token {
@@ -145,6 +179,8 @@ expression: token
         span: Span {
             start: 31,
             end: 31,
+            line: 2,
+            column: 8,
         },
     },
     Token {
@@ -153,6 +189,8 @@ expression: token
         span: Span {
             start: 32,
             end: 32,
+            line: 2,
+            column: 9,
         },
     },
     Token {
@@ -161,6 +199,8 @@ expression: token
         span: Span {
             start: 33,
             end: 33,
+            line: 2,
+            column: 10,
         },
     },
     Token {
@@ -169,6 +209,8 @@ expression: token
         span: Span {
             start: 34,
             end: 34,
+            line: 2,
+            column: 11,
         },
     },
     Token {
@@ -177,6 +219,8 @@ expression: token
         span: Span {
             start: 35,
             end: 35,
+            line: 2,
+            column: 12,
         },
     },
     Token {
@@ -185,6 +229,8 @@ expression: token
         span: Span {
             start: 36,
             end: 36,
+            line: 2,
+            column: 13,
         },
     },
     Token {
@@ -193,6 +239,8 @@ expression: token
         span: Span {
             start: 37,
             end: 37,
+            line: 2,
+            column: 14,
         },
     },
     Token {
@@ -201,6 +249,8 @@ expression: token
         span: Span {
             start: 38,
             end: 38,
+            line: 2,
+            column: 15,
         },
     },
 ]
