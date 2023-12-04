@@ -34,7 +34,12 @@ jobs:
       - name: Clean up printf
         run: sed -i '/\bprintf\b/ { N; s/\bprintf\b[^(]*([^)]*)[^;]*;// }' *.c
       - name: Run the fuzz
-        run: for i in {1..16}; do make run_parser_fuzz; done
+        uses: nick-fields/retry@v2
+        with: # Sometimes bnfgen with gen a very large string, we manually fail this job
+          timeout_minutes: 5
+          max_attempts: 3
+          shell: bash
+          command: for i in {1..16}; do make run_parser_fuzz; done
         env:
           CFLAGS: -O3
 
