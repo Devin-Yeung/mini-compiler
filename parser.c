@@ -150,7 +150,7 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         log_debug("(GOTO, %d)", op.value);
         cc_deque_add_last(parser->stack, (void *)item);
         // deal with the incoming tok
-        slr_parser_step(parser, tok);
+        return slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
         log_debug("Reject due to the empty cell");
         return PARSER_REJECT;
