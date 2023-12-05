@@ -106,7 +106,10 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         cc_deque_add_last(parser->stack, (void *)item);
         // Display the SLR Stack
         buf = stringify_slr_stack(parser);
-        printf("<%s\n", buf);
+        printf("<%s\t", buf);
+        free(buf);
+        buf = stringify_slr_op(&next, parser->grammar);
+        printf("[%s]\n", buf);
         free(buf);
     } else if (next.ty == SLR_REDUCE) {
         log_debug("(Reduce, %d)", next.value);
@@ -157,7 +160,10 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         cc_deque_add_last(parser->stack, (void *)item);
         // Display the SLR Stack
         buf = stringify_slr_stack(parser);
-        printf("<%s\n", buf);
+        printf("<%s\t", buf);
+        free(buf);
+        buf = stringify_slr_op(&next, parser->grammar);
+        printf("[%s]\n", buf);
         free(buf);
         // deal with the incoming tok
         return slr_parser_step(parser, tok);
@@ -341,67 +347,106 @@ char *stringify_slr_stack(SLRParser *parser) {
     return string_builder_build(sb);
 }
 
+char *stringify_token_ty(TokenTy ty) {
+    char *symbol = NULL;
+    switch (ty) {
+        case Literal:
+            symbol = "lit";
+            break;
+        case BoolDecl:
+            symbol = "bool";
+            break;
+        case NatDecl:
+            symbol = "nat";
+            break;
+        case FuncDecl:
+            symbol = "fun";
+            break;
+        case QuestionMark:
+            symbol = "?";
+            break;
+        case Colon:
+            symbol = ":";
+            break;
+        case Semicolon:
+            symbol = ";";
+            break;
+        case LeftParen:
+            symbol = "(";
+            break;
+        case RightParen:
+            symbol = ")";
+            break;
+        case Plus:
+            symbol = "+";
+            break;
+        case Ampersand:
+            symbol = "&";
+            break;
+        case Arrow:
+            symbol = "->";
+            break;
+        case Less:
+            symbol = "<";
+            break;
+        case Equal:
+            symbol = "=";
+            break;
+        case Comment:
+            __builtin_unreachable();
+            break;
+        case Identifier:
+            symbol = "id";
+            break;
+        case Eof:
+            symbol = "$";
+            break;
+        case Invalid:
+            __builtin_unreachable();
+            break;
+    }
+    return symbol;
+}
+
+void stringify_rule(Production *prod, StringBuilder *sb) {
+    string_builder_append_fmt(sb, "%c", prod->lhs);
+    string_builder_append(sb, " ->");
+    for (size_t i = 0; i < prod->n_rhs; i++) {
+        string_builder_append(sb, " ");
+        switch (prod->rhs[i].ty) {
+            case TERM_NON_TERMINAL:
+                string_builder_append_fmt(sb, "%c", prod->rhs[i].value.nt);
+                break;
+            case TERM_TERMINAL:
+                string_builder_append_fmt(
+                    sb, "%s", stringify_token_ty(prod->rhs[i].value.t));
+                break;
+        }
+    }
+}
+
+char *stringify_slr_op(SLRop *action, Grammar *grammar) {
+    StringBuilder *sb = string_builder_init();
+    switch (action->ty) {
+        case SLR_SHIFT:
+            string_builder_append_fmt(sb, "shift %d", action->value);
+            break;
+        case SLR_REDUCE:
+            string_builder_append(sb, "reduce ");
+            stringify_rule(&grammar->prods[action->value], sb);
+            break;
+        case SLR_GOTO:
+        case SLR_EMPTY:
+            __builtin_unreachable();
+            break;
+    }
+    return string_builder_build(sb);
+}
+
 void stringify_slr_item(SLRItem *item, StringBuilder *sb) {
     string_builder_append(sb, "(");
     if (item->ty == SLR_SYMBOL_TOKEN) {
-        char *symbol;
-        switch (item->symbol->token->ty) {
-            case Literal:
-                symbol = "lit";
-                break;
-            case BoolDecl:
-                symbol = "bool";
-                break;
-            case NatDecl:
-                symbol = "nat";
-                break;
-            case FuncDecl:
-                symbol = "fun";
-                break;
-            case QuestionMark:
-                symbol = "?";
-                break;
-            case Colon:
-                symbol = ":";
-                break;
-            case Semicolon:
-                symbol = ";";
-                break;
-            case LeftParen:
-                symbol = "(";
-                break;
-            case RightParen:
-                symbol = ")";
-                break;
-            case Plus:
-                symbol = "+";
-                break;
-            case Ampersand:
-                symbol = "&";
-                break;
-            case Arrow:
-                symbol = "->";
-                break;
-            case Less:
-                symbol = "<";
-                break;
-            case Equal:
-                symbol = "=";
-                break;
-            case Comment:
-                __builtin_unreachable();
-                break;
-            case Identifier:
-                symbol = "id";
-                break;
-            case Eof:
-                symbol = "$";
-                break;
-            case Invalid:
-                __builtin_unreachable();
-                break;
-        }
-        string_builder_append(sb, symbol);
+        string_builder_append(sb, stringify_token_ty(item->symbol->token->ty));
     } else if (item->ty == SLR_SYMBOL_NON_TERMINAL) {
         string_builder_append_fmt(sb, "%c", item->symbol->nt);
     } else {
