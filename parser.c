@@ -466,3 +466,27 @@ void stringify_slr_item(SLRItem *item, StringBuilder *sb) {
     string_builder_append_fmt(sb, "%d", item->value);
     string_builder_append(sb, ")");
 }
+
+void slr_parser_display_trace(SLRParser *parser) {
+    assert(cc_deque_size(parser->trace->stack_trace) ==
+           cc_deque_size(parser->trace->op_trace));
+    char *op_trace_buf = NULL;
+    char *stack_trace_buf = NULL;
+
+    unsigned stack_trace_max_len = 0;
+    for (size_t i = 0; i < cc_deque_size(parser->trace->stack_trace); i++) {
+        cc_deque_get_at(parser->trace->stack_trace, i,
+                        (void *)&stack_trace_buf);
+        stack_trace_max_len = stack_trace_max_len > strlen(stack_trace_buf)
+                                  ? stack_trace_max_len
+                                  : strlen(stack_trace_buf);
+    }
+
+    for (size_t i = 0; i < cc_deque_size(parser->trace->stack_trace); i++) {
+        cc_deque_get_at(parser->trace->stack_trace, i,
+                        (void *)&stack_trace_buf);
+        cc_deque_get_at(parser->trace->op_trace, i, (void *)&op_trace_buf);
+        printf("%*s\t%s\n", -stack_trace_max_len, stack_trace_buf,
+               op_trace_buf);
+    }
+}
