@@ -147,10 +147,6 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                 return PARSER_REJECT;
             }
         }
-        // Display the SLR Stack
-        buf = stringify_slr_stack(parser);
-        printf("<%s\n", buf);
-        free(buf);
         // Push the lhs item to the stack
         cc_deque_get_last(parser->stack, (void *)&last);
         SLRop op = goto_table_get(parser->table->goto_table, last->value,
@@ -159,6 +155,10 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
             slr_item_nt(prod.lhs.value.nt, SLR_SYMBOL_NON_TERMINAL, op.value);
         log_debug("(GOTO, %d)", op.value);
         cc_deque_add_last(parser->stack, (void *)item);
+        // Display the SLR Stack
+        buf = stringify_slr_stack(parser);
+        printf("<%s\n", buf);
+        free(buf);
         // deal with the incoming tok
         return slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
