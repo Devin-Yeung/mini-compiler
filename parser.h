@@ -280,6 +280,7 @@ void string_builder_append_fmt(StringBuilder *sb, const char *format, ...);
 char *string_builder_build(StringBuilder *sb);
 SLRTrace *slr_trace_init();
 char *stringify_slr_stack(SLRParser *parser);
+char *stringify_slr_op(SLRop *action, Grammar *grammar);
 void stringify_slr_item(SLRItem *item, StringBuilder *sb);
 
 #endif  // MINI_COMPILER_PARSER_H
