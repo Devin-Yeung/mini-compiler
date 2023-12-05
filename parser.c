@@ -77,6 +77,7 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
     cc_deque_new(&parser->stack);
     SLRItem *item = slr_item_token(NULL, SLR_SYMBOL_VOID, 0);
     cc_deque_add(parser->stack, item);
+    parser->trace = slr_trace_init();
 
     return parser;
 }
@@ -90,6 +91,7 @@ void destroy_slr_item_cb(void *item) { destroy_slr_item((SLRItem *)item); }
 
 void destroy_slr_parser(SLRParser *parser) {
     cc_deque_destroy_cb(parser->stack, destroy_slr_item_cb);
+    destroy_slr_trace(parser->trace);
     free(parser);
 }
 
@@ -105,12 +107,10 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, next.value);
         cc_deque_add_last(parser->stack, (void *)item);
         // Display the SLR Stack
-        buf = stringify_slr_stack(parser);
-        printf("<%s\t", buf);
-        free(buf);
-        buf = stringify_slr_op(&next, parser->grammar);
-        printf("[%s]\n", buf);
-        free(buf);
+        cc_deque_add_last(parser->trace->stack_trace,
+                          (void *)stringify_slr_stack(parser));
+        cc_deque_add_last(parser->trace->op_trace,
+                          (void *)stringify_slr_op(&next, parser->grammar));
     } else if (next.ty == SLR_REDUCE) {
         log_debug("(Reduce, %d)", next.value);
         if (next.value == 0) {
@@ -159,12 +159,10 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         log_debug("(GOTO, %d)", op.value);
         cc_deque_add_last(parser->stack, (void *)item);
         // Display the SLR Stack
-        buf = stringify_slr_stack(parser);
-        printf("<%s\t", buf);
-        free(buf);
-        buf = stringify_slr_op(&next, parser->grammar);
-        printf("[%s]\n", buf);
-        free(buf);
+        cc_deque_add_last(parser->trace->stack_trace,
+                          (void *)stringify_slr_stack(parser));
+        cc_deque_add_last(parser->trace->op_trace,
+                          (void *)stringify_slr_op(&next, parser->grammar));
         // deal with the incoming tok
         return slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
@@ -330,7 +328,18 @@ char *string_builder_build(StringBuilder *sb) {
     return str;
 }
 
-SLRTrace *slr_trace_init() { return NULL; }
+SLRTrace *slr_trace_init() {
+    SLRTrace *trace = malloc(sizeof(SLRTrace));
+    cc_deque_new(&trace->op_trace);
+    cc_deque_new(&trace->stack_trace);
+    return trace;
+}
+
+void destroy_slr_trace(SLRTrace *trace) {
+    cc_deque_destroy_cb(trace->op_trace, free);
+    cc_deque_destroy_cb(trace->stack_trace, free);
+    free(trace);
+}
 
 char *stringify_slr_stack(SLRParser *parser) {
     StringBuilder *sb = string_builder_init();
