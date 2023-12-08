@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
             printf("%s [fail]\n", path);
             ret_code |= 1;
         }
+        free(src);
     }
     destroy_grammar(g);
     return ret_code;
