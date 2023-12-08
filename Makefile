@@ -33,7 +33,7 @@ endif
 
 all: test main run_parser_fuzz
 
-test: dfa_test lexer_test symbol_table_test slr_test
+test: dfa_test lexer_test symbol_table_test slr_test parser_test
 	$(RUNTIME_FLAGS) ./build/dfa_test
 	$(RUNTIME_FLAGS) ./build/lexer_test
 	$(RUNTIME_FLAGS) ./build/slr_test
@@ -57,6 +57,10 @@ symbol_table_test: build/symbol_table.o build/symbol_table_test.o
 slr_test: build build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o
 	$(CC) $(CFLAGS) -o build/slr_test build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o
 	$(RUNTIME_FLAGS) ./build/slr_test
+
+parser_test: build build/parser_test.o build/lexer.o build/log.o build/deque.o build/parser.o
+	$(CC) $(CFLAGS) -o build/parser_test build/parser_test.o build/lexer.o build/log.o build/deque.o build/parser.o
+	$(RUNTIME_FLAGS) find snapshots/parser -type f -exec ./build/parser_test {} \;
 
 build/parser_fuzz: build build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o
 	$(CC) $(CFLAGS) -o build/parser_fuzz build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o
@@ -93,6 +97,9 @@ build/symbol_table.o: build symbol_table.c symbol_table.h
 
 build/slr_test.o: build tests/slr_test.c
 	$(CC) $(CFLAGS) -c tests/slr_test.c -o build/slr_test.o
+
+build/parser_test.o: build tests/parser_test.c
+	$(CC) $(CFLAGS) -c tests/parser_test.c -o build/parser_test.o
 
 build/parser.o: build parser.c parser.h
 	$(CC) $(CFLAGS) -c parser.c -o build/parser.o
