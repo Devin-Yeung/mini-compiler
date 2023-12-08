@@ -37,6 +37,10 @@ bool check_src(char* src, Grammar* g, bool expected_pass) {
     ParserState state;
     do {
         Token* tok = lexer_next_token(lexer);
+        if (tok->ty == Comment) {
+            destroy_token(tok);
+            continue;
+        }
         if (tok->ty == Invalid) {
             destroy_token(tok);
             state = PARSER_REJECT;
