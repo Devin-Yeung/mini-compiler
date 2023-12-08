@@ -1,0 +1,3 @@
+fun one nat x -> 1;
+fun two nat x -> 2;
+( one two 1 )
