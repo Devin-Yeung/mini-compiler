@@ -83,6 +83,9 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
 }
 
 void destroy_slr_item(SLRItem *item) {
+    if (item->ty == SLR_SYMBOL_TOKEN) {
+        destroy_token(item->symbol->token);
+    }
     free(item->symbol);
     free(item);
 }
