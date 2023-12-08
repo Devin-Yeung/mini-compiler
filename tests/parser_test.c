@@ -56,26 +56,31 @@ bool check_src(char* src, bool expected_pass) {
 }
 
 int main(int argc, char* argv[]) {
-    bool expected_pass;
-    char* path = argv[1];
-    char* src = read_file(argv[1]);
-    // pass
-    if (strstr(path, "pass") != NULL) {
-        expected_pass = true;
-    }
-    // fail
-    else if (strstr(path, "fail") != NULL) {
-        expected_pass = false;
-    } else {
-        printf("Invalid File Name, Must Suffix with \"pass\" or \"fail\"\n");
-        return 1;
-    }
+    int ret_code = 0;
+    for (int i = 1; i < argc; i++) {
+        char* path = argv[i];
+        bool expected_pass;
+        char* src = read_file(argv[i]);
+        // pass
+        if (strstr(path, "pass") != NULL) {
+            expected_pass = true;
+        }
+        // fail
+        else if (strstr(path, "fail") != NULL) {
+            expected_pass = false;
+        } else {
+            printf(
+                "Invalid File Name, Must Suffix with \"pass\" or \"fail\"\n");
+            return 1;
+        }
 
-    if (check_src(src, expected_pass)) {
-        printf("%s [pass]\n", path);
-        return 0;
-    } else {
-        printf("%s [fail]\n", path);
-        return 1;
+        if (check_src(src, expected_pass)) {
+            printf("%s [pass]\n", path);
+            ret_code |= 0;
+        } else {
+            printf("%s [fail]\n", path);
+            ret_code |= 1;
+        }
     }
+    return ret_code;
 }

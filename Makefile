@@ -59,7 +59,7 @@ slr_test: build build/slr_test.o build/lexer.o build/log.o build/deque.o build/p
 
 parser_test: build build/parser_test.o build/lexer.o build/log.o build/deque.o build/parser.o
 	$(CC) $(CFLAGS) -o build/parser_test build/parser_test.o build/lexer.o build/log.o build/deque.o build/parser.o
-	$(RUNTIME_FLAGS) find snapshots/parser -type f -exec ./build/parser_test {} \;
+	$(RUNTIME_FLAGS) ./build/parser_test $$(find snapshots/parser -type f)
 
 build/parser_fuzz: build build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o
 	$(CC) $(CFLAGS) -o build/parser_fuzz build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o
