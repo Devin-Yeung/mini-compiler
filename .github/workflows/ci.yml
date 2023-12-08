@@ -30,7 +30,7 @@ jobs:
         run: make test
         env:
           SANITIZER: 1
-          DEBUG: 1
+          CFLAGS: -O3 -g
 
   rusty-test:
     runs-on: ubuntu-latest
