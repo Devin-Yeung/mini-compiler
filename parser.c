@@ -82,7 +82,7 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
     return parser;
 }
 
-void destroy_slr_item(SLRItem *item) {
+void deep_destroy_slr_item(SLRItem *item) {
     if (item->ty == SLR_SYMBOL_TOKEN) {
         destroy_token(item->symbol->token);
     }
@@ -90,7 +90,12 @@ void destroy_slr_item(SLRItem *item) {
     free(item);
 }
 
-void destroy_slr_item_cb(void *item) { destroy_slr_item((SLRItem *)item); }
+void shallow_destroy_slr_item(SLRItem *item) {
+    free(item->symbol);
+    free(item);
+}
+
+void destroy_slr_item_cb(void *item) { deep_destroy_slr_item((SLRItem *)item); }
 
 void destroy_slr_parser(SLRParser *parser) {
     cc_deque_destroy_cb(parser->stack, destroy_slr_item_cb);
@@ -133,7 +138,7 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                         // TODO: transferred to the parse tree
                         destroy_token(last->symbol->token);
                     } else {
-                        destroy_slr_item(last);
+                        deep_destroy_slr_item(last);
                         return PARSER_REJECT;
                     }
                 }
@@ -142,12 +147,14 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                     if (prod.rhs[i].ty == TERM_NON_TERMINAL &&
                         prod.rhs[i].value.nt == last->symbol->nt) {
                     } else {
-                        destroy_slr_item(last);
+                        deep_destroy_slr_item(last);
                         return PARSER_REJECT;
                     }
                 }
                 // TODO: reserve for building parse tree
-                destroy_slr_item(last);
+                // We use shallow destroy since the token is already taken by
+                // parse tree
+                shallow_destroy_slr_item(last);
             } else {
                 // Do not have enough item to reduce a production rule
                 return PARSER_REJECT;
