@@ -38,6 +38,7 @@ bool check_src(char* src, Grammar* g, bool expected_pass) {
     do {
         Token* tok = lexer_next_token(lexer);
         if (tok->ty == Invalid) {
+            destroy_token(tok);
             state = PARSER_REJECT;
             break;
         }
