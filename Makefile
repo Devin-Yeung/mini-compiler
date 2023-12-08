@@ -34,9 +34,6 @@ endif
 all: test main run_parser_fuzz
 
 test: dfa_test lexer_test symbol_table_test slr_test parser_test
-	$(RUNTIME_FLAGS) ./build/dfa_test
-	$(RUNTIME_FLAGS) ./build/lexer_test
-	$(RUNTIME_FLAGS) ./build/slr_test
 
 main: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o
 	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o
@@ -46,9 +43,11 @@ build:
 
 dfa_test: build/dfa_test.o build/lexer.o build/log.o
 	$(CC) $(CFLAGS) -o build/dfa_test build/dfa_test.o build/lexer.o build/log.o
+	$(RUNTIME_FLAGS) ./build/dfa_test
 
 lexer_test: build build/lexer_test.o build/lexer.o build/log.o
 	$(CC) $(CFLAGS) -o build/lexer_test build/lexer_test.o build/lexer.o build/log.o
+	$(RUNTIME_FLAGS) ./build/lexer_test
 
 symbol_table_test: build/symbol_table.o build/symbol_table_test.o
 	$(CC) $(CFLAGS) -o build/symbol_table_test build/symbol_table.o build/symbol_table_test.o
@@ -114,8 +113,6 @@ format:
 	clang-format -i fuzz/*.c
 
 codecov: build main test
-	./build/dfa_test
-	./build/lexer_test
 	LOG=1  find snapshots -type f -exec ./build/func {} \;
 	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.lcov
 
