@@ -177,6 +177,7 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         return slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
         log_debug("Reject due to the empty cell");
+        destroy_token(tok);
         return PARSER_REJECT;
     }
     return PARSER_IDLE;
