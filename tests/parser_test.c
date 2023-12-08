@@ -31,9 +31,9 @@ char* read_file(char* path) {
 }
 
 // check whether the given src satisfied the expectation
-bool check_src(char* src, bool expected_pass) {
+bool check_src(char* src, Grammar* g, bool expected_pass) {
     Lexer* lexer = lexer_new(src);
-    SLRParser* parser = slr_parser_init(grammar_new(), &SLR_TABLE);
+    SLRParser* parser = slr_parser_init(g, &SLR_TABLE);
     ParserState state;
     do {
         Token* tok = lexer_next_token(lexer);
@@ -56,6 +56,7 @@ bool check_src(char* src, bool expected_pass) {
 }
 
 int main(int argc, char* argv[]) {
+    Grammar* g = grammar_new();
     int ret_code = 0;
     for (int i = 1; i < argc; i++) {
         char* path = argv[i];
@@ -71,10 +72,11 @@ int main(int argc, char* argv[]) {
         } else {
             printf(
                 "Invalid File Name, Must Suffix with \"pass\" or \"fail\"\n");
-            return 1;
+            ret_code |= 1;
+            break;
         }
 
-        if (check_src(src, expected_pass)) {
+        if (check_src(src, g, expected_pass)) {
             printf("%s [pass]\n", path);
             ret_code |= 0;
         } else {
@@ -82,5 +84,6 @@ int main(int argc, char* argv[]) {
             ret_code |= 1;
         }
     }
+    destroy_grammar(g);
     return ret_code;
 }
