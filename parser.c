@@ -17,6 +17,22 @@
 #define log_fatal(...)
 #endif
 
+char *to_string(const char *str) {
+    if (str == NULL) {
+        return NULL;
+    }
+
+    size_t length = strlen(str);
+    // Allocate memory for the new string, including space for the null
+    // terminator
+    char *ret = (char *)malloc((length + 1) * sizeof(char));
+
+    // Copy the input string to the newly allocated memory
+    strcpy(ret, str);
+
+    return ret;
+}
+
 Grammar *grammar_new() {
     Grammar *g = malloc(sizeof(Grammar));
 
@@ -127,7 +143,12 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         log_debug("(Reduce, %d)", next.value);
         if (next.value == 0) {
             log_debug("Accept!");
-            destroy_token(tok);
+            SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, 0);
+            cc_deque_add_last(parser->stack, (void *)item);
+            cc_deque_add_last(parser->trace->stack_trace,
+                              (void *)stringify_slr_stack(parser));
+            cc_deque_add_last(parser->trace->op_trace,
+                              (void *)to_string("accept"));
             return PARSER_ACCEPT;
         }
         Production prod = parser->grammar->prods[next.value];
@@ -181,7 +202,11 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         return slr_parser_step(parser, tok);
     } else /* Empty Cell, Reject */ {
         log_debug("Reject due to the empty cell");
-        destroy_token(tok);
+        SLRItem *item = slr_item_token(tok, SLR_SYMBOL_TOKEN, 0);
+        cc_deque_add_last(parser->stack, (void *)item);
+        cc_deque_add_last(parser->trace->stack_trace,
+                          (void *)stringify_slr_stack(parser));
+        cc_deque_add_last(parser->trace->op_trace, (void *)to_string("reject"));
         return PARSER_REJECT;
     }
     return PARSER_IDLE;
@@ -469,7 +494,10 @@ char *stringify_slr_op(SLRop *action, Grammar *grammar) {
 
 void stringify_slr_item(SLRItem *item, StringBuilder *sb) {
     string_builder_append(sb, "(");
-    if (item->ty == SLR_SYMBOL_TOKEN) {
+    if (item->ty == SLR_SYMBOL_TOKEN && item->symbol->token->ty == Eof) {
+        string_builder_append(sb, "$)");
+        return;
+    } else if (item->ty == SLR_SYMBOL_TOKEN) {
         string_builder_append(sb, stringify_token_ty(item->symbol->token->ty));
     } else if (item->ty == SLR_SYMBOL_NON_TERMINAL) {
         string_builder_append_fmt(sb, "%c", item->symbol->nt);
