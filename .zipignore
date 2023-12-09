@@ -9,3 +9,5 @@
 /mini-compiler-rs
 cliff.toml
 CHANGELOG.md
+**/.ruff_cache
+/table
