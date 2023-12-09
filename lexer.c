@@ -51,12 +51,12 @@ bool dfa_matches(DFA *dfa, const char *s) {
     return accept;
 };
 
-Token *eof_token() {
+Token *eof_token(unsigned start, unsigned end, unsigned line, unsigned col) {
     Token *token = (Token *)malloc(sizeof(Token));
     token->lexeme = (char *)malloc(sizeof(char) * 2);
     token->lexeme[0] = '$';
     token->lexeme[1] = '\0';
-    token->span = NULL;
+    token->span = span_new(start, end, line, col);
     token->ty = Eof;
     return token;
 }
@@ -263,7 +263,7 @@ Token *lexer_next_token(Lexer *lexer) {
 
     if (lexer->start > lexer->len) {
         log_info("EOF reached");
-        return eof_token();
+        return eof_token(lexer->start, lexer->end, lexer->line, lexer->column);
     }
 
     unsigned cursor = lexer->start;
@@ -349,7 +349,7 @@ Token *lexer_next_token(Lexer *lexer) {
         }
     }
 
-    return eof_token();
+    return eof_token(lexer->start, lexer->end, lexer->line, lexer->column);
 }
 
 void destroy_token(Token *token) {

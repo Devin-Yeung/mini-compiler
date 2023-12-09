@@ -48,7 +48,7 @@ typedef struct Token {
     TokenTy ty;
 } Token;
 
-Token *eof_token();
+Token *eof_token(unsigned start, unsigned end, unsigned line, unsigned col);
 int debug_token(Token *token, char *buf, size_t bufsz);
 void destroy_token(Token *token);
 
