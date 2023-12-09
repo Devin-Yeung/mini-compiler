@@ -37,7 +37,39 @@ char *read_to_string(const char *filename) {
     return buffer;
 }
 
-void parse(char *src, Grammar *g) {
+char *add_suffix(const char *filename, const char *suffix) {
+    // Check if the input strings are not NULL
+    if (filename == NULL || suffix == NULL) {
+        return NULL;
+    }
+
+    // Find the position of the last dot in the filename
+    const char *dotPosition = strrchr(filename, '.');
+
+    // Check if a dot was found
+    if (dotPosition == NULL) {
+        // If no dot was found, simply append the suffix
+        return strcat(strdup(filename), suffix);
+    } else {
+        // If a dot was found, insert the suffix before the dot
+        size_t length = dotPosition - filename;
+        char *result =
+            (char *)malloc((length + strlen(suffix) + 1) * sizeof(char));
+
+        if (result == NULL) {
+            perror("Memory allocation failed");
+            exit(EXIT_FAILURE);
+        }
+
+        strncpy(result, filename, length);
+        strcpy(result + length, suffix);
+        strcpy(result + length + strlen(suffix), dotPosition);
+
+        return result;
+    }
+}
+
+void parse(char *src, Grammar *g, FILE *fp) {
     Lexer *lexer = lexer_new(src);
     SLRParser *parser = slr_parser_init(g, &SLR_TABLE);
     ParserState state;
@@ -62,11 +94,11 @@ void parse(char *src, Grammar *g) {
     } while (state == PARSER_IDLE);
     if (state == PARSER_ACCEPT) {
         // success
-        slr_parser_display_trace(parser);
+        slr_parser_display_trace(parser, fp);
         printf("Parsing Accomplished! No syntax error!\n");
     } else {
         // fail
-        slr_parser_display_trace(parser);
+        slr_parser_display_trace(parser, fp);
         printf("Syntax error at Line %d Column %d\n", line, col);
     }
     destroy_slr_parser(parser);
@@ -83,14 +115,18 @@ int main(int argc, char *argv[]) {
     }
 #endif
     const char *filename = argv[1];
+    char *output_file = add_suffix(filename, "_out");
     char *src = read_to_string(filename);
+    FILE *fp = fopen(output_file, "w");
     Grammar *grammar = grammar_new();
 
     if (src != NULL) {
-        parse(src, grammar);
+        parse(src, grammar, fp);
         free(src);
     }
 
+    fclose(fp);
     destroy_grammar(grammar);
+    free(output_file);
     return 0;
 }

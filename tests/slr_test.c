@@ -18,7 +18,7 @@ void smoke_test() {
         state = slr_parser_step(parser, tok);
     } while (state == PARSER_IDLE);
     assert(state = PARSER_ACCEPT);
-    slr_parser_display_trace(parser);
+    slr_parser_display_trace(parser, NULL);
     destroy_slr_parser(parser);
     destroy_grammar(grammar);
     destroy_lexer(lexer);
