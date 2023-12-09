@@ -78,6 +78,10 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
     SLRItem *item = slr_item_token(NULL, SLR_SYMBOL_VOID, 0);
     cc_deque_add(parser->stack, item);
     parser->trace = slr_trace_init();
+    cc_deque_add_last(parser->trace->stack_trace,
+                      (void *)stringify_slr_stack(parser));
+    cc_deque_add_last(parser->trace->op_trace,
+                      (void *)calloc(1, sizeof(char)));  // empty string
 
     return parser;
 }
