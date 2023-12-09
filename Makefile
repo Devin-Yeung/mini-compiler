@@ -31,12 +31,15 @@ else
 endif
 
 
-all: test main run_parser_fuzz
+all: test run_parser_fuzz
 
-test: dfa_test lexer_test symbol_table_test slr_test parser_test
+test: dfa_test lexer_test symbol_table_test slr_test parser_test func_test
 
-main: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o
+func: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o
 	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o
+
+func_test: func
+	$(RUNTIME_FLAGS) find snapshots -type f -exec ./build/func {} \;
 
 build:
 	mkdir build
@@ -112,8 +115,7 @@ format:
 	clang-format -i tests/*.c
 	clang-format -i fuzz/*.c
 
-codecov: build main test
-	LOG=1  find snapshots -type f -exec ./build/func {} \;
+codecov: build func test
 	lcov --capture --directory build $(GCOV_TOOL) --output-file coverage.lcov
 
 clean: build
