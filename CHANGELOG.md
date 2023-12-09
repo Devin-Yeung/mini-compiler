@@ -2,6 +2,98 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2023-12-09
+
+### Bug Fixes
+
+- Change `=>` to `->` in SLR
+- Set the production len in grammar
+- Fix memory leak in slr test
+- Destroy slr parser after use to prevent mem leak
+- Change `accept` to `r0` in SLR table
+- Use `==` instead of `=` in test
+- Fix the mem layout of `Production` struct
+- Fix some bugs in SLR parser core
+- Try to fix mem leak in `slr_parser_step`
+- Try to fix mem leak of SLR Item
+- Fix mem leaks caused by the EOF token
+- Fix fuzz CI script
+- Enable clang in CI env
+- Avoid eating more than one EOF
+- Abandon the deque iterator since it's buggy
+- Reduce should be displayed after the lhs is pushed into the stack
+- Make parser test return correct error code
+- Fix mem leaks when free the SLRItem
+- Fix the double free in slr parser
+- Fix the leaking string
+- Fix the leaking token in SLR parsing
+- Destroy the tok when it is invalid to prevent mem leak
+- Deal with comment correctly
+- Give eof token span info to prevent segfault
+- Fix the clean-up script
+
+### Features
+
+- Fuzzy test for lexer
+- Stick to the requirements, ignore the comments and early stop
+- Draft SLR parser API
+- Deque data structure
+- Design SLR Stack (draft)
+- Add SLR.csv
+- Proof of concept of grammar rule
+- Impl some of the initializer
+- Finish the grammar rules
+- SLR minimal working example
+- SLR_parser_step API
+- Convert the SLR table to C code
+- Get item from SLR goto table
+- Get item from SLR shift-reduce table
+- A draft impl of SLR core parse logic
+- Add a simple test case for SLR parser
+- Raw version of the bnf grammar
+- Generate more realistic test cases
+- Tend to generate more functions in fuzz
+- Impl a naive parser fuzzer
+- Run fuzz in CI
+- Remove all the `printf` in fuzz to improve speed
+- Add line and col info to `Span`
+- Auto rerun the job when bnfgen generate large string
+- A naive stack trace impl
+- Improve the log info
+- Print the parser stack
+- Track the SLRops
+- Track all the stack and ops
+- Display the trace in a pretty way
+- Impl the parser_test
+- Fix the memory leaks of grammar
+- Add more test cases for parser
+- Add some fuzz tests
+- Add some should fail tests
+- Rework the main function
+- Add the initial state of stack to trace
+- Add accept and reject state to SLR trace
+- Persist the SLR trace
+
+### Miscellaneous Tasks
+
+- Init the source file
+- Fix typo
+- Allow reading `CFLAGS` from env
+- Reduce the number of fuzz run
+- Reorder the place where to show the SLR stack
+- Only run fuzz on dispatch
+- Make test in CI faster
+- Make codecov faster
+- Update zipignore
+
+### Refactor
+
+- Rework on the parser
+- Merge `BoolLit` and `NatLit` to `Literal`
+- Merge `BoolLit` and `NatLit` in Rust bindings
+- Rework on the test structure
+- Refactor the func test
+
 ## [0.1.2] - 2023-11-01
 
 ### Bug Fixes
