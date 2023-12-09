@@ -3,41 +3,11 @@
 #include <string.h>
 
 #include "lexer.h"
+#include "parser.h"
 #include "symbol_table.h"
 #ifdef LOG
 #include "log.h"
 #endif
-
-typedef struct Position {
-    unsigned line;
-    unsigned col;
-} Position;
-
-/**
- * Convert Span representation to Position representation
- * SAFETY: immutable borrow to the span
- * @param span span information
- * @param src source code
- * @return
- */
-Position *span_to_position(const Span *span, const char *src) {
-    Position *pos = (Position *)malloc(sizeof(Position));
-    pos->line = 1;
-    pos->col = 1;
-    for (unsigned i = 0; i < span->start; i++) {
-        if (src[i] == '\n') {
-            pos->line++;
-            pos->col = 1;
-        } else {
-            pos->col++;
-        }
-    }
-    return pos;
-}
-
-int debug_position(const Position *pos, char *buf, size_t bufsz) {
-    return snprintf(buf, bufsz, "line: %u, column %u", pos->line, pos->col);
-}
 
 char *read_to_string(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -67,49 +37,39 @@ char *read_to_string(const char *filename) {
     return buffer;
 }
 
-void lexical_parse(char *s) {
-    Lexer *lexer = lexer_new(s);
-    SymbolTable *tab = symbol_table_new();
-    while (true) {
-        Token *next = lexer_next_token(lexer);
-        if (next->ty == Comment) {
-            /* Skip */
-        } else if (next->ty == Eof) {
-            printf("EOF Reached, Lexical Analysis Finished.\n");
-            destroy_token(next);
-            break;
-        } else if (next->ty == Invalid) {
-            char buf[256];
-            char *ptr = buf;
-            ptr +=
-                snprintf(ptr, sizeof(buf),
-                         "Error: Invalid Token '%s' found at ", next->lexeme);
-            ptr += debug_position(span_to_position(next->span, s), ptr,
-                                  sizeof(buf));
-            printf("%s\n", buf);
-            printf(
-                "Lexical Analysis Halt since an invalid token is detected!\n");
-            destroy_token(next);
-            break;
-        } else {
-            if (next->ty == Identifier) {
-                symbol_table_insert(
-                    tab, next->lexeme,
-                    FuncTy);  // TODO: symbol ty is known in syntactic analysis
-            }
-            char buf[256];
-            char *ptr = buf;
-            ptr += debug_token(next, ptr, sizeof(buf));
-            ptr += snprintf(ptr, sizeof(buf), " at ");
-            ptr += debug_position(span_to_position(next->span, s), ptr,
-                                  sizeof(buf));
-            printf("==> %s\n", buf);
+void parse(char *src, Grammar *g) {
+    Lexer *lexer = lexer_new(src);
+    SLRParser *parser = slr_parser_init(g, &SLR_TABLE);
+    ParserState state;
+
+    unsigned line;
+    unsigned col;
+
+    do {
+        Token *tok = lexer_next_token(lexer);
+        line = tok->span->line;
+        col = tok->span->column;
+        if (tok->ty == Comment) {
+            destroy_token(tok);
+            continue;
         }
-        destroy_token(next);
+        if (tok->ty == Invalid) {
+            printf("Invalid token at Line %d Column %d\n", line, col);
+            destroy_token(tok);
+            break;
+        }
+        state = slr_parser_step(parser, tok);
+    } while (state == PARSER_IDLE);
+    if (state == PARSER_ACCEPT) {
+        // success
+        slr_parser_display_trace(parser);
+        printf("Parsing Accomplished! No syntax error!\n");
+    } else {
+        // fail
+        slr_parser_display_trace(parser);
+        printf("Syntax error at Line %d Column %d\n", line, col);
     }
-    printf("\n=== Symbol table: ===\n");
-    symbol_table_walk(tab);
-    symbol_table_destroy(tab);
+    destroy_slr_parser(parser);
     destroy_lexer(lexer);
 }
 
@@ -124,11 +84,13 @@ int main(int argc, char *argv[]) {
 #endif
     const char *filename = argv[1];
     char *src = read_to_string(filename);
+    Grammar *grammar = grammar_new();
 
     if (src != NULL) {
-        lexical_parse(src);
+        parse(src, grammar);
         free(src);
     }
 
+    destroy_grammar(grammar);
     return 0;
 }
