@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "deque.h"
 #ifdef LOG
 #include "log.h"
 #else

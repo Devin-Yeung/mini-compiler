@@ -6,7 +6,6 @@
 
 #define MAX_PRODUCTIONS 20
 
-#include "deque.h"
 #include "lexer.h"
 #include "parse_tree.h"
 

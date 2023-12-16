@@ -35,8 +35,8 @@ all: test run_parser_fuzz
 
 test: dfa_test lexer_test symbol_table_test slr_test parser_test func_test
 
-func: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o build/parse_tree.o
-	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o build/parse_tree.o
+func: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/parse_tree.o
+	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/parse_tree.o
 
 func_test: func
 	$(RUNTIME_FLAGS) find snapshots -type f -exec ./build/func {} \;
@@ -56,16 +56,16 @@ symbol_table_test: build/symbol_table.o build/symbol_table_test.o
 	$(CC) $(CFLAGS) -o build/symbol_table_test build/symbol_table.o build/symbol_table_test.o
 	$(RUNTIME_FLAGS) ./build/symbol_table_test
 
-slr_test: build build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o build/parse_tree.o
-	$(CC) $(CFLAGS) -o build/slr_test build/slr_test.o build/lexer.o build/log.o build/deque.o build/parser.o build/parse_tree.o
+slr_test: build build/slr_test.o build/lexer.o build/log.o build/parser.o build/parse_tree.o
+	$(CC) $(CFLAGS) -o build/slr_test build/slr_test.o build/lexer.o build/log.o build/parser.o build/parse_tree.o
 	$(RUNTIME_FLAGS) ./build/slr_test
 
-parser_test: build build/parser_test.o build/lexer.o build/log.o build/deque.o build/parser.o build/parse_tree.o
-	$(CC) $(CFLAGS) -o build/parser_test build/parser_test.o build/lexer.o build/log.o build/deque.o build/parser.o build/parse_tree.o
+parser_test: build build/parser_test.o build/lexer.o build/log.o build/parser.o build/parse_tree.o
+	$(CC) $(CFLAGS) -o build/parser_test build/parser_test.o build/lexer.o build/log.o build/parser.o build/parse_tree.o
 	$(RUNTIME_FLAGS) ./build/parser_test $$(find snapshots/parser -type f)
 
-build/parser_fuzz: build build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o build/parse_tree.o
-	$(CC) $(CFLAGS) -o build/parser_fuzz build/parser_fuzz.o build/lexer.o build/log.o build/deque.o build/parser.o build/parse_tree.o
+build/parser_fuzz: build build/parser_fuzz.o build/lexer.o build/log.o build/parser.o build/parse_tree.o
+	$(CC) $(CFLAGS) -o build/parser_fuzz build/parser_fuzz.o build/lexer.o build/log.o build/parser.o build/parse_tree.o
 
 run_parser_fuzz: build/parser_fuzz
 	bnfgen table/grammar.bnf | build/parser_fuzz
@@ -108,9 +108,6 @@ build/parser.o: build parser.c parser.h
 
 build/parse_tree.o: build parse_tree.c parse_tree.h
 	$(CC) $(CFLAGS) -c parse_tree.c -o build/parse_tree.o
-
-build/deque.o: build deque.c deque.h
-	$(CC) $(CFLAGS) -c deque.c -o build/deque.o
 
 format:
 	clang-format -i *.c
