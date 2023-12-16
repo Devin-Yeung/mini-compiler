@@ -1,13 +1,14 @@
 #ifndef MINI_COMPILER_PARSER_H
 #define MINI_COMPILER_PARSER_H
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #define MAX_PRODUCTIONS 20
 
 #include "deque.h"
 #include "lexer.h"
+#include "parse_tree.h"
 
 typedef enum TermTy {
     TERM_NON_TERMINAL,
@@ -213,19 +214,6 @@ typedef struct SLRTable {
     const SLRop (*shift_reduce_table)[16];  // 16 tokens
 } SLRTable;
 
-typedef char NonTerminal;
-
-typedef union {
-    NonTerminal nt;
-    Token *token;  // Take the **ownership** of the token
-} SLRSymbol;
-
-typedef enum SLRSymbolTy {
-    SLR_SYMBOL_NON_TERMINAL,
-    SLR_SYMBOL_TOKEN,
-    SLR_SYMBOL_VOID,  // Reserve for the bottom of the stack
-} SLRSymbolTy;
-
 typedef struct SLRItem {
     SLRSymbol *symbol;  // Non-terminal or Token
     SLRSymbolTy ty;     // the type of the symbol
@@ -242,6 +230,7 @@ typedef struct SLRParser {
     Grammar *grammar;
     CC_Deque *stack;  // <SLRItem*>
     SLRTrace *trace;
+    ParseTreeNode *parse_tree;
 } SLRParser;
 
 typedef enum ParserState {
@@ -271,7 +260,7 @@ SLRItem *slr_item_init(SLRSymbol symbol, SLRSymbolTy ty, unsigned value);
 SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table);
 void destroy_slr_parser(SLRParser *parser);
 ParserState slr_parser_step(SLRParser *parser, Token *tok);
-void slr_parser_display_trace(SLRParser *parser, FILE* fp);
+void slr_parser_display_trace(SLRParser *parser, FILE *fp);
 
 SLRop goto_table_get(const SLRop (*goto_table)[9], unsigned state_id,
                      NonTerminal nt);

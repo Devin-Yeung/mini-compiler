@@ -98,7 +98,7 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
                       (void *)stringify_slr_stack(parser));
     cc_deque_add_last(parser->trace->op_trace,
                       (void *)calloc(1, sizeof(char)));  // empty string
-
+    parser->parse_tree = parse_tree_node_init(NULL);
     return parser;
 }
 
@@ -152,33 +152,43 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
             return PARSER_ACCEPT;
         }
         Production prod = parser->grammar->prods[next.value];
-        // Consume all the rhs item
+        // Consume all the rhs item and create a new parse tree node
+        ParseTreeNode *node =
+            parse_tree_node_init(slr_symbol_init_nt(prod.lhs.value.nt));
         for (int i = (int)(prod.n_rhs - 1); i >= 0; i--) {
             if (cc_deque_remove_last(parser->stack, (void *)&last) == CC_OK) {
                 // check if production rule is matched
+                // Terminal
                 if (last->ty == SLR_SYMBOL_TOKEN) {
                     if (prod.rhs[i].ty == TERM_TERMINAL &&
                         prod.rhs[i].value.t == last->symbol->token->ty) {
                         // TODO: Remove this line if the ownership is
                         // TODO: transferred to the parse tree
-                        destroy_token(last->symbol->token);
+                        parse_tree_node_add_first(
+                            node, parse_tree_node_init(last->symbol));
                     } else {
                         deep_destroy_slr_item(last);
                         return PARSER_REJECT;
                     }
                 }
 
+                // Non-terminal
                 if (last->ty == SLR_SYMBOL_NON_TERMINAL) {
                     if (prod.rhs[i].ty == TERM_NON_TERMINAL &&
                         prod.rhs[i].value.nt == last->symbol->nt) {
+                        ParseTreeNode *nt_node =
+                            parse_tree_node_remove_last(parser->parse_tree);
+                        parse_tree_node_add_first(node, nt_node);
                     } else {
                         deep_destroy_slr_item(last);
                         return PARSER_REJECT;
                     }
                 }
                 // TODO: reserve for building parse tree
-                // We use shallow destroy since the token is already taken by
-                // parse tree
+                // Node construction is done, push to the tree
+                parse_tree_node_add_last(parser->parse_tree, node);
+                // shallow destroy since the token is already taken by parse
+                // tree
                 shallow_destroy_slr_item(last);
             } else {
                 // Do not have enough item to reduce a production rule
