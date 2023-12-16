@@ -1,7 +1,6 @@
 #include "parser.h"
 
 #include <assert.h>  // TODO: remove me in release
-#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -30,6 +29,15 @@ char *to_string(const char *str) {
     // Copy the input string to the newly allocated memory
     strcpy(ret, str);
 
+    return ret;
+}
+
+unsigned log10u(unsigned n) {
+    unsigned ret = 0;
+    while (n > 0) {
+        n /= 10;
+        ret++;
+    }
     return ret;
 }
 
@@ -536,7 +544,7 @@ void slr_parser_display_trace(SLRParser *parser, FILE *fp) {
                                   : strlen(stack_trace_buf);
     }
 
-    int digit_len = (int)log10(cc_deque_size(parser->trace->stack_trace)) + 1;
+    unsigned digit_len = log10u(cc_deque_size(parser->trace->stack_trace));
     for (size_t i = 0; i < cc_deque_size(parser->trace->stack_trace); i++) {
         cc_deque_get_at(parser->trace->stack_trace, i,
                         (void *)&stack_trace_buf);
