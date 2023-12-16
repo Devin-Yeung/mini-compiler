@@ -39,5 +39,7 @@ ParseTreeNode* parse_tree_node_init(SLRSymbol* sym, NodeTy ty);
 void parse_tree_node_add_first(ParseTreeNode* node, ParseTreeNode* child);
 void parse_tree_node_add_last(ParseTreeNode* node, ParseTreeNode* child);
 ParseTreeNode* parse_tree_node_remove_last(ParseTreeNode* node);
+void destroy_parse_tree_node(ParseTreeNode* node);
+void destroy_parse_tree(ParseTree* tree);
 
 #endif  // MINI_COMPILER_PARSE_TREE_H
