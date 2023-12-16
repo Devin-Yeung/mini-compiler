@@ -6,6 +6,12 @@ ParseTree* parse_tree_init(ParseTreeNode* node) {
     return tree;
 }
 
+SLRSymbol* slr_symbol_init_nt(NonTerminal nt) {
+    SLRSymbol* sym = malloc(sizeof(SLRSymbol));
+    sym->nt = nt;
+    return sym;
+}
+
 ParseTreeNode* parse_tree_node_init(SLRSymbol* sym) {
     ParseTreeNode* node = malloc(sizeof(ParseTreeNode));
     node->SLRSymbol = sym;
@@ -18,6 +24,13 @@ void parse_tree_node_add_first(ParseTreeNode* node, ParseTreeNode* child) {
         cc_deque_new(&node->children);
     }
     cc_deque_add_first(node->children, child);
+}
+
+void parse_tree_node_add_last(ParseTreeNode* node, ParseTreeNode* child) {
+    if (node->children == NULL) {
+        cc_deque_new(&node->children);
+    }
+    cc_deque_add_last(node->children, child);
 }
 
 ParseTreeNode* parse_tree_node_remove_last(ParseTreeNode* node) {
