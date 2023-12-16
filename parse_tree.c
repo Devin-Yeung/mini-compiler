@@ -43,3 +43,31 @@ ParseTreeNode* parse_tree_node_remove_last(ParseTreeNode* node) {
         return out;
     }
 }
+
+void destroy_parse_tree_node(ParseTreeNode* node) {
+    if (node->SLRSymbol != NULL) {
+        switch (node->ty) {
+            case NODE_TERMINAL:
+                destroy_token(node->SLRSymbol->token);
+                free(node->SLRSymbol);
+                break;
+            case NODE_NON_TERMINAL:
+                free(node->SLRSymbol);
+                break;
+        }
+    }
+
+    if (node->children != NULL) {
+        for (size_t i = 0; i < cc_deque_size(node->children); i++) {
+            ParseTreeNode* child;
+            cc_deque_get_at(node->children, i, (void*)&child);
+            destroy_parse_tree_node(child);
+        }
+    }
+    free(node);
+}
+
+void destroy_parse_tree(ParseTree* tree) {
+    destroy_parse_tree_node(tree->root);
+    free(tree);
+}

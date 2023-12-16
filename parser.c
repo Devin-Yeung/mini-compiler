@@ -110,14 +110,14 @@ void deep_destroy_slr_item(SLRItem *item) {
     free(item);
 }
 
-void shallow_destroy_slr_item(SLRItem *item) {
-    free(item->symbol);
-    free(item);
-}
+void shallow_destroy_slr_item(SLRItem *item) { free(item); }
 
 void destroy_slr_item_cb(void *item) { deep_destroy_slr_item((SLRItem *)item); }
 
 void destroy_slr_parser(SLRParser *parser) {
+    if (parser->parse_tree != NULL) {
+        destroy_parse_tree_node(parser->parse_tree);
+    }
     cc_deque_destroy_cb(parser->stack, destroy_slr_item_cb);
     destroy_slr_trace(parser->trace);
     free(parser);

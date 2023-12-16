@@ -49,12 +49,14 @@ bool check_src(char* src, Grammar* g, bool expected_pass) {
         state = slr_parser_step(parser, tok);
     } while (state == PARSER_IDLE);
     ParseTree* tree = slr_parser_parse_tree(parser);
+    bool tree_check = (tree->root->children != NULL &&
+                       cc_deque_size(tree->root->children) == 1);
+    destroy_parse_tree(tree);
     destroy_slr_parser(parser);
     destroy_lexer(lexer);
     switch (expected_pass) {
         case true:
-            return state == PARSER_ACCEPT &&
-                   cc_deque_size(tree->root->children) == 1;
+            return state == PARSER_ACCEPT && tree_check;
         case false:
             return state != PARSER_ACCEPT;
         default:
@@ -68,6 +70,8 @@ int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; i++) {
         char* path = argv[i];
         bool expected_pass;
+        printf("Testing %s => ", path);
+        fflush(stdout);
         char* src = read_file(argv[i]);
         // pass
         if (strstr(path, "pass") != NULL) {
@@ -84,10 +88,10 @@ int main(int argc, char* argv[]) {
         }
 
         if (check_src(src, g, expected_pass)) {
-            printf("%s [pass]\n", path);
+            printf("[pass]\n");
             ret_code |= 0;
         } else {
-            printf("%s [fail]\n", path);
+            printf("[fail]\n");
             ret_code |= 1;
         }
         free(src);
