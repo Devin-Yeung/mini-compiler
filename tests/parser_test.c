@@ -48,11 +48,13 @@ bool check_src(char* src, Grammar* g, bool expected_pass) {
         }
         state = slr_parser_step(parser, tok);
     } while (state == PARSER_IDLE);
+    ParseTree* tree = slr_parser_parse_tree(parser);
     destroy_slr_parser(parser);
     destroy_lexer(lexer);
     switch (expected_pass) {
         case true:
-            return state == PARSER_ACCEPT;
+            return state == PARSER_ACCEPT &&
+                   cc_deque_size(tree->root->children) == 1;
         case false:
             return state != PARSER_ACCEPT;
         default:
