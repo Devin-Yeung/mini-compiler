@@ -61,26 +61,25 @@ char *add_suffix(const char *filename, const char *suffix) {
     }
 
     // Find the position of the last dot in the filename
-    const char *dotPosition = strrchr(filename, '.');
-
+    const char *dot_pos = strrchr(filename, '.');
     // Check if a dot was found
-    if (dotPosition == NULL) {
+    if (dot_pos == NULL) {
         // If no dot was found, simply append the suffix
         return strcat_copy(filename, suffix);
     } else {
         // If a dot was found, insert the suffix before the dot
-        size_t length = dotPosition - filename;
-        char *result =
-            (char *)malloc((length + strlen(suffix) + 1) * sizeof(char));
+        size_t length = dot_pos - filename;
+        char *result = (char *)malloc((strlen(filename) + strlen(suffix) + 1) *
+                                      sizeof(char));
 
         if (result == NULL) {
             perror("Memory allocation failed");
             exit(EXIT_FAILURE);
         }
 
-        strncpy(result, filename, length);
+        strcpy(result, filename);
         strcpy(result + length, suffix);
-        strcpy(result + length + strlen(suffix), dotPosition);
+        strcpy(result + length + strlen(suffix), dot_pos);
 
         return result;
     }
