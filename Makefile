@@ -35,8 +35,8 @@ all: test run_parser_fuzz
 
 test: dfa_test lexer_test symbol_table_test slr_test parser_test func_test
 
-func: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o
-	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o
+func: build/func.o build/lexer.o build/symbol_table.o build/log.o build/parser.o build/deque.o build/parse_tree.o
+	$(CC) $(CFLAGS) -o build/func build/func.o build/lexer.o build/symbol_table.o build/log.o build/deque.o build/parser.o build/parse_tree.o
 
 func_test: func
 	$(RUNTIME_FLAGS) find snapshots -type f -exec ./build/func {} \;
