@@ -512,16 +512,22 @@ char *stringify_slr_op(SLRop *action, Grammar *grammar) {
 }
 
 void stringify_slr_item(SLRItem *item, StringBuilder *sb) {
-    string_builder_append(sb, "(");
     if (item->ty == SLR_SYMBOL_TOKEN && item->symbol->token->ty == Eof) {
-        string_builder_append(sb, "$)");
+        string_builder_append(sb, "$");
         return;
-    } else if (item->ty == SLR_SYMBOL_TOKEN) {
+    }
+
+    if (item->ty == SLR_SYMBOL_VOID) {
+        string_builder_append(sb, "0");
+        return;
+    }
+
+    string_builder_append(sb, "(");
+    if (item->ty == SLR_SYMBOL_TOKEN) {
         string_builder_append(sb, stringify_token_ty(item->symbol->token->ty));
     } else if (item->ty == SLR_SYMBOL_NON_TERMINAL) {
         string_builder_append_fmt(sb, "%c", item->symbol->nt);
     } else {
-        string_builder_append(sb, "0)");
         return;
     }
     string_builder_append(sb, ", ");
