@@ -9,6 +9,23 @@
 #include "log.h"
 #endif
 
+char *strcat_copy(const char *str1, const char *str2) {
+    unsigned str1_len, str2_len;
+    char *new_str;
+
+    /* null check */
+    str1_len = strlen(str1);
+    str2_len = strlen(str2);
+
+    new_str = malloc(str1_len + str2_len + 1);
+
+    /* null check */
+    memcpy(new_str, str1, str1_len);
+    memcpy(new_str + str1_len, str2, str2_len + 1);
+
+    return new_str;
+}
+
 char *read_to_string(const char *filename) {
     FILE *file = fopen(filename, "r");
 
@@ -49,7 +66,7 @@ char *add_suffix(const char *filename, const char *suffix) {
     // Check if a dot was found
     if (dotPosition == NULL) {
         // If no dot was found, simply append the suffix
-        return strcat(strdup(filename), suffix);
+        return strcat_copy(filename, suffix);
     } else {
         // If a dot was found, insert the suffix before the dot
         size_t length = dotPosition - filename;
