@@ -98,7 +98,7 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table) {
                       (void *)stringify_slr_stack(parser));
     cc_deque_add_last(parser->trace->op_trace,
                       (void *)calloc(1, sizeof(char)));  // empty string
-    parser->parse_tree = parse_tree_node_init(NULL);
+    parser->parse_tree = parse_tree_node_init(NULL, NODE_NON_TERMINAL);
     return parser;
 }
 
@@ -153,8 +153,8 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         }
         Production prod = parser->grammar->prods[next.value];
         // Consume all the rhs item and create a new parse tree node
-        ParseTreeNode *node =
-            parse_tree_node_init(slr_symbol_init_nt(prod.lhs.value.nt));
+        ParseTreeNode *node = parse_tree_node_init(
+            slr_symbol_init_nt(prod.lhs.value.nt), NODE_NON_TERMINAL);
         for (int i = (int)(prod.n_rhs - 1); i >= 0; i--) {
             if (cc_deque_remove_last(parser->stack, (void *)&last) == CC_OK) {
                 // check if production rule is matched
@@ -165,7 +165,8 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                         // TODO: Remove this line if the ownership is
                         // TODO: transferred to the parse tree
                         parse_tree_node_add_first(
-                            node, parse_tree_node_init(last->symbol));
+                            node,
+                            parse_tree_node_init(last->symbol, NODE_TERMINAL));
                     } else {
                         deep_destroy_slr_item(last);
                         return PARSER_REJECT;
