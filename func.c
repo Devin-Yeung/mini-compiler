@@ -63,7 +63,7 @@ char *add_suffix(const char *filename, const char *suffix) {
     // Find the position of the last dot in the filename
     const char *dot_pos = strrchr(filename, '.');
     // Check if a dot was found
-    if (dot_pos == NULL) {
+    if (dot_pos == NULL || *(dot_pos + 1) == '/' || *(dot_pos + 1) == '\\') {
         // If no dot was found, simply append the suffix
         return strcat_copy(filename, suffix);
     } else {
