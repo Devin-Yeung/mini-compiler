@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include <assert.h>  // TODO: remove me in release
+#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -215,7 +216,8 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
         cc_deque_add_last(parser->stack, (void *)item);
         cc_deque_add_last(parser->trace->stack_trace,
                           (void *)stringify_slr_stack(parser));
-        cc_deque_add_last(parser->trace->op_trace, (void *)to_string("reject"));
+        cc_deque_add_last(parser->trace->op_trace,
+                          (void *)to_string("syntax error"));
         return PARSER_REJECT;
     }
     return PARSER_IDLE;
@@ -534,15 +536,16 @@ void slr_parser_display_trace(SLRParser *parser, FILE *fp) {
                                   : strlen(stack_trace_buf);
     }
 
+    int digit_len = (int)log10(cc_deque_size(parser->trace->stack_trace)) + 1;
     for (size_t i = 0; i < cc_deque_size(parser->trace->stack_trace); i++) {
         cc_deque_get_at(parser->trace->stack_trace, i,
                         (void *)&stack_trace_buf);
         cc_deque_get_at(parser->trace->op_trace, i, (void *)&op_trace_buf);
-        printf("%*s\t%s\n", -stack_trace_max_len, stack_trace_buf,
-               op_trace_buf);
+        printf("Step %-*lu:<%*s\t%s\n", digit_len, i, -stack_trace_max_len,
+               stack_trace_buf, op_trace_buf);
         if (fp != NULL) {
-            fprintf(fp, "%*s\t%s\n", -stack_trace_max_len, stack_trace_buf,
-                    op_trace_buf);
+            fprintf(fp, "Step %-*lu:<%*s\t%s\n", digit_len, i,
+                    -stack_trace_max_len, stack_trace_buf, op_trace_buf);
         }
     }
 }
