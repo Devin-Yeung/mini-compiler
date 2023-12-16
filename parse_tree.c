@@ -2,7 +2,7 @@
 
 ParseTree* parse_tree_init(ParseTreeNode* node) {
     ParseTree* tree = malloc(sizeof(ParseTree));
-    tree->root;
+    tree->root = node;
     return tree;
 }
 
