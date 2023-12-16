@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2023-12-17
+
+### Bug Fixes
+
+- Remove deps `math.h`
+- Fix heap buffer overflow in path concat
+- Fix the heap buffer overflow in `add_suffix`
+- Deal with the 'fake' suffix
+
+### Miscellaneous Tasks
+
+- Remove underlines in `0` and `$`
+- Comment out the `assert` to avoid panic
+
 ## [0.2.2] - 2023-12-16
 
 ### Features
