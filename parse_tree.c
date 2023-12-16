@@ -63,6 +63,7 @@ void destroy_parse_tree_node(ParseTreeNode* node) {
             cc_deque_get_at(node->children, i, (void*)&child);
             destroy_parse_tree_node(child);
         }
+        cc_deque_destroy(node->children);
     }
     free(node);
 }
