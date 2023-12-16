@@ -180,6 +180,7 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                         ParseTreeNode *nt_node =
                             parse_tree_node_remove_last(parser->parse_tree);
                         parse_tree_node_add_first(node, nt_node);
+                        free(last->symbol);  // ugly patch to fix mem leak
                     } else {
                         deep_destroy_slr_item(last);
                         return PARSER_REJECT;
