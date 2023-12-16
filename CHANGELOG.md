@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2023-12-16
+
+### Bug Fixes
+
+- Fix `func` build error
+- Fix the parse tree construction
+- Fix `parse_tree_init`
+- Fix a bunch of mem pitfall
+- Destroy the deque when destroy tree
+- Try to fix mem leak in SLR sym
+
+### Features
+
+- Draft API of parse tree
+- Try building the parse tree
+- A simple test on parse tree
+- Declare the node ty
+
+### Miscellaneous Tasks
+
+- Init the parse_tree module
+
+### Refactor
+
+- Merge deque into parse tree
+
 ## [0.2.0] - 2023-12-09
 
 ### Bug Fixes
