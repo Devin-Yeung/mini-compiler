@@ -1,6 +1,5 @@
 #include "parser.h"
 
-#include <assert.h>  // TODO: remove me in release
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -406,7 +405,7 @@ char *stringify_slr_stack(SLRParser *parser) {
     size_t deque_sz = cc_deque_size(parser->stack);
     for (size_t i = 0; i < deque_sz; i++) {
         cc_deque_get_at(parser->stack, i, (void *)&el);
-        assert(el != NULL);
+        // assert(el != NULL);
         stringify_slr_item(el, sb);
         if (i != deque_sz - 1) {
             string_builder_append(sb, ", ");
@@ -536,8 +535,8 @@ void stringify_slr_item(SLRItem *item, StringBuilder *sb) {
 }
 
 void slr_parser_display_trace(SLRParser *parser, FILE *fp) {
-    assert(cc_deque_size(parser->trace->stack_trace) ==
-           cc_deque_size(parser->trace->op_trace));
+    // assert(cc_deque_size(parser->trace->stack_trace) ==
+    // cc_deque_size(parser->trace->op_trace));
     char *op_trace_buf = NULL;
     char *stack_trace_buf = NULL;
 
