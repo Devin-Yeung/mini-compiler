@@ -12,9 +12,10 @@ SLRSymbol* slr_symbol_init_nt(NonTerminal nt) {
     return sym;
 }
 
-ParseTreeNode* parse_tree_node_init(SLRSymbol* sym) {
+ParseTreeNode* parse_tree_node_init(SLRSymbol* sym, NodeTy ty) {
     ParseTreeNode* node = malloc(sizeof(ParseTreeNode));
     node->SLRSymbol = sym;
+    node->ty = ty;
     node->children = NULL;
     return node;
 }

@@ -26,6 +26,7 @@ typedef enum NodeTy {
 
 typedef struct ParseTreeNode {
     SLRSymbol* SLRSymbol;
+    NodeTy ty;
     CC_Deque* children;
 } ParseTreeNode;
 
@@ -34,7 +35,7 @@ typedef struct ParseTree {
 } ParseTree;
 
 ParseTree* parse_tree_init(ParseTreeNode* node);
-ParseTreeNode* parse_tree_node_init(SLRSymbol* sym);
+ParseTreeNode* parse_tree_node_init(SLRSymbol* sym, NodeTy ty);
 void parse_tree_node_add_first(ParseTreeNode* node, ParseTreeNode* child);
 void parse_tree_node_add_last(ParseTreeNode* node, ParseTreeNode* child);
 ParseTreeNode* parse_tree_node_remove_last(ParseTreeNode* node);
