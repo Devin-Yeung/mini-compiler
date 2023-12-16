@@ -184,17 +184,15 @@ ParserState slr_parser_step(SLRParser *parser, Token *tok) {
                         return PARSER_REJECT;
                     }
                 }
-                // TODO: reserve for building parse tree
-                // Node construction is done, push to the tree
-                parse_tree_node_add_last(parser->parse_tree, node);
-                // shallow destroy since the token is already taken by parse
-                // tree
+                // shallow destroy since the token will be taken by parse tree
                 shallow_destroy_slr_item(last);
             } else {
                 // Do not have enough item to reduce a production rule
                 return PARSER_REJECT;
             }
         }
+        // Node construction is done, push to the tree
+        parse_tree_node_add_last(parser->parse_tree, node);
         // Push the lhs item to the stack
         cc_deque_get_last(parser->stack, (void *)&last);
         SLRop op = goto_table_get(parser->table->goto_table, last->value,
@@ -546,4 +544,15 @@ void slr_parser_display_trace(SLRParser *parser, FILE *fp) {
                     op_trace_buf);
         }
     }
+}
+
+/**
+ * Take the ownership of the parse tree from the parser
+ * @param parser
+ * @return parser tree (with ownership)
+ */
+ParseTree *slr_parser_parse_tree(SLRParser *parser) {
+    ParseTreeNode *root = parser->parse_tree;
+    parser->parse_tree = NULL;
+    return parse_tree_init(root);
 }

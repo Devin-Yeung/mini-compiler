@@ -261,6 +261,7 @@ SLRParser *slr_parser_init(Grammar *grammar, const SLRTable *table);
 void destroy_slr_parser(SLRParser *parser);
 ParserState slr_parser_step(SLRParser *parser, Token *tok);
 void slr_parser_display_trace(SLRParser *parser, FILE *fp);
+ParseTree *slr_parser_parse_tree(SLRParser *parser);
 
 SLRop goto_table_get(const SLRop (*goto_table)[9], unsigned state_id,
                      NonTerminal nt);
